@@ -9,9 +9,81 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
- 
-        long ans = 0;
-        out.println(ans);
+        int M = ni();
+        int D = ni();
+        int[] A = new int[M];
+        for (int i = 0; i < M; i++) {
+            A[i] = ni()-1;
+        }
+        int[] at = new int[N];
+        for (int i = 0; i < at.length; i++) {
+            at[i] = i;
+        }
+        for (int i = 0; i < M; i++) {
+            int temp = at[A[i]];
+            at[A[i]] = at[A[i]+1];
+            at[A[i]+1] = temp;
+        }
+        System.err.println(Arrays.toString(at));
+        Doubling db = new Doubling(N, D, at);
+        int[] after = new int[N];
+        for (int j = 0; j < N; j++) {
+            after[j] = db.get_after(j, D);     
+        }
+        System.err.println(Arrays.toString(after));
+        int[] ans = new int[N];
+        for (int i = 0; i < N; i++) {
+            ans[after[i]] = i;
+        }
+        System.err.println(Arrays.toString(ans));
+        for (int i = 0; i < N; i++) {
+            out.println(ans[i]+1);
+        }
+    }
+    class Doubling {
+        int[][] next;
+        int size;
+        int LOG_D;
+
+        Doubling(int size, int max_step, int[] after_first){
+            this.size = size;
+            this.LOG_D = 0;
+            int d2 = 1;
+            while(d2<max_step){
+                d2*=2;
+                this.LOG_D++;
+            }
+            this.next = new int[LOG_D+1][size];
+            for (int i = 0; i < size; i++) {
+                this.next[0][i] = after_first[i];
+            }
+            init();
+        }
+        void init(){
+            for (int k = 0; k < LOG_D; k++) {
+                for (int i = 0; i < size; i++) {
+                    if(next[k][i]==-1){
+                        next[k+1][i] = -1;
+                    }else{
+                        next[k+1][i] = next[k][next[k][i]];
+                    }
+                }
+            }
+        }
+        int get_after(int pos, int step){
+            assert pos<size;
+            int p = pos;
+            for (int i = LOG_D; i >=0; i--) {
+                if(p==-1){
+                    break;
+                }else{
+                    if(((step>>i)&1) == 1){
+                        p = next[i][p];
+                    }
+                }
+            }
+            return p;
+        }    
     }
 
     final int mod = 1000000007;
