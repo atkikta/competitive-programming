@@ -8,82 +8,28 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
-        int Q = ni();
-        int[] c = new int[N];
-        for (int i = 0; i < N; i++) {
-            c[i] = ni();
+        String N = ns();
+        long[][] dp = new long[N.length()+1][2];
+        dp[0][1] = 1;
+        for (int i = 0; i < N.length(); i++) {
+            int digit = Integer.valueOf(N.substring(i,i+1));
+            dp[i+1][0] = Math.min(dp[i][0]+digit, dp[i][1]+(10-digit));
+            dp[i+1][1] = Math.min(dp[i][0]+digit+1, dp[i][1]+(9-digit));
         }
-        UnionFind uf = new UnionFind(N, c);
-        for (int i = 0; i < Q; i++) {
-            int type = ni();
-            if(type==1){
-                int a = ni()-1;
-                int b = ni()-1;
-                uf.union(a, b);
-            }else{
-                int x = ni()-1;
-                int y = ni();
-                out.println(uf.query(x, y));
-            }
-        }
+        long ans = dp[N.length()][0];
+        out.println(ans);
     }
-    class UnionFind{
-        int[] par;
-        ArrayList<HashMap<Integer, Integer>> cls = new ArrayList<>();
-        UnionFind(int n, int[] c){
-            par = new int[n];
-            for (int i = 0; i < n; i++) {
-                par[i] = -1;
-                cls.add(new HashMap<>());
-            }
-            for (int i = 0; i < n; i++) {
-                cls.get(i).put(c[i],1);
-                
-            }
-        }
-        int find (int n){
-            if(par[n] < 0){
-                return n;
-            }else{
-                return find(par[n]);
-            }
-        }
-        int query(int x, int y){
-            int p = find(x);
-            if(cls.get(p).containsKey(y)) return cls.get(p).get(y);
-            else return 0;
-        }
-        boolean union(int a, int b){
-            a = find(a);
-            b = find(b);
-            if(a == b) return false;
-            if(par[a] > par[b]){
-                int temp = b;
-                b = a;
-                a = temp;
-            }
-            par[a] += par[b];
-            par[b] = a;
-            for (Integer c : cls.get(b).keySet()) {
-                cls.get(a).putIfAbsent(c, 0);
-                cls.get(a).put(c, cls.get(a).get(c)+ cls.get(b).get(c));
-            }
-            return true;
-        }
-        int par(int n){
-            return par[n];
-        }
-        int size(int n){
-            return -par[find(n)];
-        }
-        boolean same(int a, int b){
-            return find(a) == find(b);
-        }
-    }
+
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
-
+    
+    long gcd(long num1,long num2) {
+        if(num2 == 0) return num1;
+        else return gcd(num2 , num1 % num2 );
+    }
+    long lcm(long a, long b){
+        return (a / gcd(a, b)) * b;
+    }
     int mul(int x, int y){
         int val = (int)((x * 1L * y) % mod);
         return val>=0 ? val : val+mod;
@@ -141,6 +87,11 @@ public class Main {
             res[i] = nl();
         }
         return res;
+    }
+    void print2DArray(int[][] a){
+        for (int i = 0; i < a.length; i++) {
+            System.out.println(Arrays.toString(a[i]));
+        }
     }
  
     static BufferedReader in;
