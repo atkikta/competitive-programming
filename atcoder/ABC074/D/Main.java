@@ -9,48 +9,32 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
-        int M = ni();
-        graph = new ArrayList<>();
+        int[][] A = new int[N][N];
         for (int i = 0; i < N; i++) {
-            graph.add(new ArrayList<>());
-        }
-        int[] before = new int[N];
-        int[] incount = new int[N];
-        Arrays.fill(before, -1); 
-        for (int i = 0; i < N-1+M; i++) {
-            int A = ni()-1;
-            int B = ni()-1;
-            graph.get(A).add(B);
-            before[B] = A;
-            incount[B]++;
-        }
-        int root = 0;
-        for (int i = 0; i < before.length; i++) {
-            if(before[i]==-1) root = i;
-        }
-        int[] dist = new int[N];
-        Arrays.fill(dist, -1);
-        int[] parent = new int[N];
-        parent[root] = -1;
-        ArrayDeque<Integer> que = new ArrayDeque<>();
-        que.add(root);
-        dist[root] = 0;
-        while(que.size()>0){
-            int now = que.poll();
-            for (Integer next : graph.get(now)) {
-                incount[next]--;
-                if(dist[next]==-1 || dist[next] < dist[now] + 1){
-                    dist[next] = dist[now] + 1;
-                    parent[next] = now;
-                }
-                if(incount[next]==0)que.add(next);
+            for (int j = 0; j < N; j++) {
+                A[i][j] = ni();
             }
         }
+        long ans = 0;
         for (int i = 0; i < N; i++) {
-            out.println(parent[i]+1);
+            for (int j = i+1; j < N; j++) {
+                int d = Integer.MAX_VALUE;
+                for (int k = 0; k < N; k++) {
+                    if(k==i || k==j) continue;
+                    d = Math.min(d, A[i][k] + A[k][j]);
+                }
+                // System.out.println(String.format("%d %d %d", i, j ,d));
+                if(A[i][j] > d){
+                    out.println(-1);
+                    return;
+                }else if(A[i][j] < d){
+                    ans += A[i][j];
+                }
+            }
         }
+        out.println(ans);
     }
-    ArrayList<ArrayList<Integer>> graph;
+
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     

@@ -26,10 +26,10 @@ public class Main {
                     if(j<s.length()) val = val*10 +(s.charAt(j)-'0');
                     else val = val * 10;
                 }
-                System.out.println(val);
+                // System.out.println(val);
             }else{
                 val = Long.valueOf(s) * 1000_000_000;
-                System.out.println(val);
+                // System.out.println(val);
             }
             long val2 = val;
             while(val2 % 2 == 0){
@@ -42,15 +42,32 @@ public class Main {
                 val5 = val5/5;
             }
         }
-        System.out.println(Arrays.toString(twos));
-        System.out.println(Arrays.toString(fivs));
-        int[] twocount = new int[21];
-        int[] fivcount = new int[21];
+        // System.out.println(Arrays.toString(twos));
+        // System.out.println(Arrays.toString(fivs));
+        int[][] count = new int[41][41];
         for (int i = 0; i < N; i++) {
-            twocount[twos[i]]++;
-            fivcount[fivs[i]]++;
+            count[twos[i]][fivs[i]]++;
         }
-        
+        long ans = 0;
+        for (int i = 0; i < 41; i++) {
+            for (int j = 0; j < 41; j++) {
+                for (int k = 0; k < 41; k++) {
+                    for (int l = 0; l < 41; l++) {
+                        if(i+k>=18 && j+l>=18){
+                            if(i==k && j==l) {
+                                ans += count[i][j]* 1L *(count[i][j]-1);
+                                // if(count[i][j]>0)System.out.println(String.format("%d %d %d %d %d",1,i,j,k,l));
+                            }
+                            else {
+                                ans += count[i][j] * 1L * count[k][l];
+                                // if(count[i][j]>0&&count[k][l]>0)System.out.println(String.format("%d %d %d %d %d",2,i,j,k,l));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println(ans/2);
     }
 
     final int mod = 1000000007;

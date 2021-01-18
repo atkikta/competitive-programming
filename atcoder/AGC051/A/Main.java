@@ -9,51 +9,41 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
-        int M = ni();
-        graph = new ArrayList<>();
-        for (int i = 0; i < N; i++) {
-            graph.add(new ArrayList<>());
-        }
-        int[] before = new int[N];
-        int[] incount = new int[N];
-        Arrays.fill(before, -1); 
-        for (int i = 0; i < N-1+M; i++) {
-            int A = ni()-1;
-            int B = ni()-1;
-            graph.get(A).add(B);
-            before[B] = A;
-            incount[B]++;
-        }
-        int root = 0;
-        for (int i = 0; i < before.length; i++) {
-            if(before[i]==-1) root = i;
-        }
-        int[] dist = new int[N];
-        Arrays.fill(dist, -1);
-        int[] parent = new int[N];
-        parent[root] = -1;
-        ArrayDeque<Integer> que = new ArrayDeque<>();
-        que.add(root);
-        dist[root] = 0;
-        while(que.size()>0){
-            int now = que.poll();
-            for (Integer next : graph.get(now)) {
-                incount[next]--;
-                if(dist[next]==-1 || dist[next] < dist[now] + 1){
-                    dist[next] = dist[now] + 1;
-                    parent[next] = now;
-                }
-                if(incount[next]==0)que.add(next);
+        ModComb mc = new ModComb(2*N, mod);
+
+        long ans = mc.comb(2*N, N) * modinv(2,mod);
+        out.println(ans%mod);
+    }
+
+    final int mod = 998244353;
+    final BigInteger MOD = BigInteger.valueOf(mod);
+    class ModComb{
+        int mod;
+        int N;
+        int[] nfac;
+        int[] nfacinv;
+        ModComb(int n, int mod){
+            this.mod = mod;
+            final BigInteger MOD = BigInteger.valueOf(mod);
+            this.N=n;
+            this.nfac = new int[n+1];
+            this.nfacinv = new int[n+1];
+            nfac[0] = 1;
+            for (int i = 1; i < n+1; i++) {
+                nfac[i] = (int)((nfac[i-1] * 1L * i)%mod);
+            }
+            int inv = BigInteger.valueOf((long)nfac[n]).modInverse(MOD).intValue();
+            this.nfacinv[n] = inv;
+            for (int i = n; i > 0; i--) {
+                nfacinv[i-1] = (int)((nfacinv[i] * 1L * i)%mod);
             }
         }
-        for (int i = 0; i < N; i++) {
-            out.println(parent[i]+1);
+        int comb(int n, int r){
+            int ret = (int)((nfac[n] * 1L * nfacinv[r]) % mod);
+            ret = (int)((ret * 1L * nfacinv[n-r]) % mod);
+            return ret;
         }
     }
-    ArrayList<ArrayList<Integer>> graph;
-    final int mod = 1000000007;
-    final BigInteger MOD = BigInteger.valueOf(mod);
-    
     long gcd(long num1,long num2) {
         if(num2 == 0) return num1;
         else return gcd(num2 , num1 % num2 );
@@ -61,6 +51,29 @@ public class Main {
     long lcm(long a, long b){
         return (a / gcd(a, b)) * b;
     }
+    long modinv(long a, int m) {
+		long b = m;
+		long u = 1;
+		long v = 0;
+		long tmp = 0;
+ 
+		while (b > 0) {
+			long t = a / b;
+			a -= t * b;
+			tmp = a;
+			a = b;
+			b = tmp;
+ 
+			u -= t * v;
+			tmp = u;
+			u = v;
+			v = tmp;
+		}
+ 
+		u %= m;
+		if (u < 0) u += m;
+		return u;
+	}
     int mul(int x, int y){
         int val = (int)((x * 1L * y) % mod);
         return val>=0 ? val : val+mod;

@@ -9,48 +9,31 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
-        int M = ni();
-        graph = new ArrayList<>();
+        int K = ni();
+        int[] a = new int[N];
+        HashMap<Integer, Integer> count = new HashMap<>();
         for (int i = 0; i < N; i++) {
-            graph.add(new ArrayList<>());
+            a[i] = ni();
+            count.putIfAbsent(a[i], 0);
+            count.put(a[i], count.get(a[i])+1);
         }
-        int[] before = new int[N];
-        int[] incount = new int[N];
-        Arrays.fill(before, -1); 
-        for (int i = 0; i < N-1+M; i++) {
-            int A = ni()-1;
-            int B = ni()-1;
-            graph.get(A).add(B);
-            before[B] = A;
-            incount[B]++;
-        }
-        int root = 0;
-        for (int i = 0; i < before.length; i++) {
-            if(before[i]==-1) root = i;
-        }
-        int[] dist = new int[N];
-        Arrays.fill(dist, -1);
-        int[] parent = new int[N];
-        parent[root] = -1;
-        ArrayDeque<Integer> que = new ArrayDeque<>();
-        que.add(root);
-        dist[root] = 0;
-        while(que.size()>0){
-            int now = que.poll();
-            for (Integer next : graph.get(now)) {
-                incount[next]--;
-                if(dist[next]==-1 || dist[next] < dist[now] + 1){
-                    dist[next] = dist[now] + 1;
-                    parent[next] = now;
-                }
-                if(incount[next]==0)que.add(next);
+        long ans = 0;
+        int boxleft = K;
+        long lastkey = -1;
+        for (int i = 0; i < N; i++) {
+            if(!count.containsKey(i)){
+                break;
             }
+            if(count.get(i) < boxleft){
+                ans += (boxleft - count.get(i)) *1L* (lastkey+1);
+                boxleft  = count.get(i);
+            }
+            lastkey = i;
         }
-        for (int i = 0; i < N; i++) {
-            out.println(parent[i]+1);
-        }
+        ans += (lastkey+1) *1L* boxleft;
+        out.println(ans);
     }
-    ArrayList<ArrayList<Integer>> graph;
+
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     

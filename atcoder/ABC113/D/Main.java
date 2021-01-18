@@ -8,49 +8,47 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
-        int M = ni();
-        graph = new ArrayList<>();
-        for (int i = 0; i < N; i++) {
-            graph.add(new ArrayList<>());
+        int H = ni();
+        int W = ni();
+        int K = ni();
+        if(W==1){
+            out.println(1);
+            return;
         }
-        int[] before = new int[N];
-        int[] incount = new int[N];
-        Arrays.fill(before, -1); 
-        for (int i = 0; i < N-1+M; i++) {
-            int A = ni()-1;
-            int B = ni()-1;
-            graph.get(A).add(B);
-            before[B] = A;
-            incount[B]++;
-        }
-        int root = 0;
-        for (int i = 0; i < before.length; i++) {
-            if(before[i]==-1) root = i;
-        }
-        int[] dist = new int[N];
-        Arrays.fill(dist, -1);
-        int[] parent = new int[N];
-        parent[root] = -1;
-        ArrayDeque<Integer> que = new ArrayDeque<>();
-        que.add(root);
-        dist[root] = 0;
-        while(que.size()>0){
-            int now = que.poll();
-            for (Integer next : graph.get(now)) {
-                incount[next]--;
-                if(dist[next]==-1 || dist[next] < dist[now] + 1){
-                    dist[next] = dist[now] + 1;
-                    parent[next] = now;
+        int[][] count = new int[W][2];
+        count[0][0] = 1;
+        count[0][1] = 1;
+        count[1][0] = 1;
+        count[1][1] = 1;
+        for (int i = 1; i <= W-2; i++) {
+            count[i+1][0] = add(count[i][0], count[i][1]);
+            count[i+1][1] = count[i][0];
+        } 
+        int[][] dp = new int[H+1][W];
+        dp[0][0] = 1;
+        for (int i = 1; i <= H; i++) {
+            for (int j = 0; j < W; j++) {
+                if(j==0){
+                    dp[i][j] = add(dp[i][j], mul(dp[i-1][j+1], count[W-1][1]));
+                    dp[i][j] = add(dp[i][j], mul(dp[i-1][j], count[W-1][0]));
+                }else if(j==W-1){
+                    dp[i][j] = add(dp[i][j], mul(dp[i-1][j-1], count[W-1][1]));
+                    dp[i][j] = add(dp[i][j], mul(dp[i-1][j], count[W-1][0]));
+                }else{
+                    dp[i][j] = add(dp[i][j], mul(dp[i-1][j-1], mul(count[j][1], count[W-j-1][0])));
+                    dp[i][j] = add(dp[i][j], mul(dp[i-1][j+1], mul(count[j][0], count[W-j-1][1])));
+                    dp[i][j] = add(dp[i][j], mul(dp[i-1][j], mul(count[j][0], count[W-j-1][0])));
                 }
-                if(incount[next]==0)que.add(next);
             }
         }
-        for (int i = 0; i < N; i++) {
-            out.println(parent[i]+1);
-        }
+
+        // for (int i = 0; i < dp.length; i++) {
+        //     System.out.println(Arrays.toString(dp[i]));
+        // }
+        long ans = dp[H][K-1];
+        out.println(ans);
     }
-    ArrayList<ArrayList<Integer>> graph;
+
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     

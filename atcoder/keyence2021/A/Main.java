@@ -9,48 +9,31 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
-        int M = ni();
-        graph = new ArrayList<>();
+        long[] a = new long[N];
+        long[] b = new long[N];
         for (int i = 0; i < N; i++) {
-            graph.add(new ArrayList<>());
+            a[i] = nl();
         }
-        int[] before = new int[N];
-        int[] incount = new int[N];
-        Arrays.fill(before, -1); 
-        for (int i = 0; i < N-1+M; i++) {
-            int A = ni()-1;
-            int B = ni()-1;
-            graph.get(A).add(B);
-            before[B] = A;
-            incount[B]++;
-        }
-        int root = 0;
-        for (int i = 0; i < before.length; i++) {
-            if(before[i]==-1) root = i;
-        }
-        int[] dist = new int[N];
-        Arrays.fill(dist, -1);
-        int[] parent = new int[N];
-        parent[root] = -1;
-        ArrayDeque<Integer> que = new ArrayDeque<>();
-        que.add(root);
-        dist[root] = 0;
-        while(que.size()>0){
-            int now = que.poll();
-            for (Integer next : graph.get(now)) {
-                incount[next]--;
-                if(dist[next]==-1 || dist[next] < dist[now] + 1){
-                    dist[next] = dist[now] + 1;
-                    parent[next] = now;
-                }
-                if(incount[next]==0)que.add(next);
-            }
+        long[] cmaxa = new long[N];
+        cmaxa[0] = a[0];
+        for (int i = 1; i < N; i++) {
+            cmaxa[i] = Math.max(cmaxa[i-1],a[i]); 
         }
         for (int i = 0; i < N; i++) {
-            out.println(parent[i]+1);
+            b[i] = nl();
+        }
+        long[][] dp = new long[N][2];
+        dp[0][1] = a[0] * b[0];
+        for (int i = 1; i < N; i++) {
+            dp[i][0] = dp[i-1][1];
+            dp[i][1] = Math.max(dp[i-1][1],b[i]*cmaxa[i]); 
+        }
+ 
+        for (int i = 0; i < N; i++) {
+            out.println(Math.max(dp[i][0],dp[i][1]));
         }
     }
-    ArrayList<ArrayList<Integer>> graph;
+
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     
