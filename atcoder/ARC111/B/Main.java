@@ -11,25 +11,24 @@ public class Main {
         int N = ni();
         int[] a = new int[N];
         int[] b = new int[N];
-        UnionFind uf = new UnionFind(n);
+        final int NT = 400001;
+        UnionFind uf = new UnionFind(NT);
         for (int i = 0; i < N; i++) {
             a[i] = ni();
             b[i] = ni();
-            
-        }
+            uf.union(a[i], b[i]);   
+        } 
+        HashMap<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < N; i++) {
-            if(a[i]==b[i]) continue;
-            else{
-                boolean aused = used.contains(a[i]);
-                boolean bused = used.contains(b[i]);
-                if(aused && bused) continue;
-                else if(!aused && bused) used.add(a[i]);
-                else if(aused && !bused) used.add(b[i]);
-                else used.add(b[i]);
-            }
+            int par = uf.find(a[i]);
+            map.putIfAbsent(par, 0);
+            map.put(par, map.get(par)+1);
         }
- 
-        long ans = used.size();
+        long ans = 0;
+        for (Integer pa: map.keySet()) {
+            if( map.get(pa) == uf.size(pa)-1) ans += uf.size(pa)-1;
+            else ans += uf.size(pa);
+        }
         out.println(ans);
     }
     class UnionFind{
