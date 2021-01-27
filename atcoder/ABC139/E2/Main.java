@@ -32,12 +32,26 @@ public class Main {
                 snode = tnode;
             }
         }
+        dist = new HashMap<>();
+        for (HashSet node : graph.keySet()) {
+            dist.add(node, Integer.MAX_VALUE);
+        }
 
-
-        long ans = 0;
+        for (Hashset node : graph.keySet()) {
+            dfs(node);
+        }
+        int ans = 0;
+        for (Integer d : dist.values()) {
+            ans = Math.max(ans, d);
+        }
         out.println(ans);
     }
-
+    dfs(HashSet<Integer> node){
+        for (HashSet<Integer> next : graph.get(node)) {
+            
+        }
+    }
+    HashMap<HashSet<Integer>, Integer> dist;
     HashMap<HashSet<Integer>, ArrayList<HashSet<Integer>>> graph;
 
 

@@ -11,110 +11,84 @@ public class Main {
         int N = ni();
         int[] X = new int[N];
         int[] Y = new int[N];
+        int[][] point = new int[N][2];
         for (int i = 0; i < N; i++) {
             X[i] = ni();
             Y[i] = ni();
+            point[i][0] = X[i];
+            point[i][1] = Y[i];
         }
+        ArrayList<Mat2x2> mat = new ArrayList<>();
+        mat.add(new Mat2x2(1, 0, 0, 1));
+        ArrayList<Vec2d> vec = new ArrayList<>();
+        vec.add(new Vec2d(0, 0));
         int M = ni();
-        int[] sw = new int[M+1];
-        int[] mulx = new int[M+1];
-        int[] muly = new int[M+1];
-        for (int i = 0; i < muly.length; i++) {
-            mulx[i] = 1;
-            muly[i] = 1;
-        }
-        long[] addx = new long[M+1];
-        long[] addy = new long[M+1];
         for (int i = 0; i < M; i++) {
             int t = ni();
+            Mat2x2 m = mat.get(i);
+            Vec2d  v = vec.get(i);
             if(t==1){
-                sw[i+1] = sw[i]+1;
-                if(sw[i+1]%2==1){
-                    mulx[i+1] = mulx[i] * -1;
-                    addx[i+1] = addx[i] * -1;
-                    muly[i+1] = muly[i];
-                    addy[i+1] = addy[i];
-                }else{
-                    mulx[i+1] = mulx[i];
-                    addx[i+1] = addx[i];
-                    muly[i+1] = muly[i] * -1;
-                    addy[i+1] = addy[i] * -1;
-                }
-            }
-            if(t==2){
-                sw[i+1] = sw[i]+1;
-                if(sw[i+1]%2==0){
-                    mulx[i+1] = mulx[i] * -1;
-                    addx[i+1] = addx[i] * -1;
-                    muly[i+1] = muly[i];
-                    addy[i+1] = addy[i];
-                }else{
-                    mulx[i+1] = mulx[i];
-                    addx[i+1] = addx[i];
-                    muly[i+1] = muly[i] * -1;
-                    addy[i+1] = addy[i] * -1;
-                }
-            }
-            if(t==3){
+                mat.add(new Mat2x2(0, 1, -1, 0).mul(m));
+                vec.add(new Mat2x2(0, 1, -1, 0).mul(v));
+            }else if(t==2){
+                mat.add(new Mat2x2(0, -1, 1, 0).mul(m));
+                vec.add(new Mat2x2(0, -1, 1, 0).mul(v));
+            }else if(t==3){
                 long p = nl();
-                sw[i+1] = sw[i];
-                if(sw[i+i]==0){
-                    mulx[i+1] = mulx[i] * -1;
-                    addx[i+1] = addx[i] * -1 + 2*p;
-                    addy[i+1] = addy[i];
-                    muly[i+1] = muly[i];
-                }else{
-                    muly[i+1] = muly[i] * -1;
-                    addy[i+1] = addy[i] * -1 + 2*p;
-                    addx[i+1] = addx[i];
-                    mulx[i+1] = mulx[i];
-                }
-            }
-            if(t==4){
+                mat.add(new Mat2x2(-1, 0, 0, 1).mul(m));
+                vec.add(new Mat2x2(-1, 0, 0, 1).mul(v).add(new Vec2d(2*p, 0)));
+            }else if(t==4){
                 long p = nl();
-                sw[i+1] = sw[i];
-                if(sw[i+1]==1){
-                    mulx[i+1] = mulx[i] * -1;
-                    addx[i+1] = addx[i] * -1 + 2*p;
-                    addy[i+1] = addy[i];
-                    muly[i+1] = muly[i];
-                }else{
-                    muly[i+1] = muly[i] * -1;
-                    addy[i+1] = addy[i] * -1 + 2*p;
-                    addx[i+1] = addx[i];
-                    mulx[i+1] = mulx[i];
-                }
+                mat.add(new Mat2x2(1, 0, 0, -1).mul(m));
+                vec.add(new Mat2x2(1, 0, 0, -1).mul(v).add(new Vec2d(0, 2*p)));
             }
-            System.out.println(Arrays.toString(mulx));
-            System.out.println(Arrays.toString(addx));
-            System.out.println(Arrays.toString(muly));
-            System.out.println(Arrays.toString(addy));
         }
         int Q = ni();
         for (int i = 0; i < Q; i++) {
             int A = ni();
             int B = ni()-1;
-            if(sw[A] == 0){
-                long x = X[B];
-                long y = Y[B];
-                x = x * mulx[A] + addx[A];
-                y = y * muly[A] + addy[A];
-                out.print(x);
-                out.print(" ");
-                out.println(y);
-            }else{
-                long x = X[B];
-                long y = Y[B];
-                x = x * mulx[A] + addx[A];
-                y = y * muly[A] + addy[A];
-                out.print(y);
-                out.print(" ");
-                out.println(x);
-
-            }
+            Vec2d p = new Vec2d(point[B][0], point[B][1]);
+            // print2DArray(mat.get(A).a);
+            // System.out.println(Arrays.toString(vec.get(A).a));
+            Vec2d ans = vec.get(A).add(mat.get(A).mul(p));
+            out.print(ans.a[0]);
+            out.print(" ");
+            out.println(ans.a[1]);
         }
     }
-
+    class Mat2x2{
+        long[][] a;
+        Mat2x2(long a00, long a01, long a10, long a11){
+            a = new long[2][2];
+            a[0][0] = a00;
+            a[0][1] = a01;
+            a[1][0] = a10;
+            a[1][1] = a11;
+        }
+        Mat2x2 mul(Mat2x2 b){
+            long a00 = a[0][0]*b.a[0][0] + a[0][1]*b.a[1][0]; 
+            long a01 = a[0][0]*b.a[0][1] + a[0][1]*b.a[1][1]; 
+            long a10 = a[1][0]*b.a[0][0] + a[1][1]*b.a[1][0]; 
+            long a11 = a[1][0]*b.a[0][1] + a[1][1]*b.a[1][1];
+            return new Mat2x2(a00, a01, a10, a11);
+        }
+        Vec2d mul(Vec2d b){
+            long a0 = a[0][0] * b.a[0] + a[0][1] * b.a[1];
+            long a1 = a[1][0] * b.a[0] + a[1][1] * b.a[1];
+            return new Vec2d(a0, a1);
+        }
+    }
+    class Vec2d{
+        long[] a;
+        Vec2d(long a0, long a1){
+            a = new long[2];
+            a[0] = a0;
+            a[1] = a1;
+        }
+        Vec2d add(Vec2d b){
+            return new Vec2d(a[0] + b.a[0], a[1] + b.a[1]);
+        }
+    }
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     
@@ -183,7 +157,7 @@ public class Main {
         }
         return res;
     }
-    void print2DArray(int[][] a){
+    void print2DArray(long[][] a){
         for (int i = 0; i < a.length; i++) {
             System.out.println(Arrays.toString(a[i]));
         }

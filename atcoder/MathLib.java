@@ -90,4 +90,27 @@ class MathLib{
         ans += floor_sum(y_max, a, m, (a-x_max%a)%a);
         return ans;
     }
+    public static long modinv(long a, int m) {
+		long b = m;
+		long u = 1;
+		long v = 0;
+		long tmp = 0;
+ 
+		while (b > 0) {
+			long t = a / b;
+			a -= t * b;
+			tmp = a;
+			a = b;
+			b = tmp;
+ 
+			u -= t * v;
+			tmp = u;
+			u = v;
+			v = tmp;
+		}
+ 
+		u %= m;
+		if (u < 0) u += m;
+		return u;
+	}
 }

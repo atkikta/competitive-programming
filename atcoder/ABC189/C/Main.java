@@ -9,8 +9,44 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
- 
-        long ans = 0;
+        int[] A = new int [N];
+        for (int i = 0; i < N; i++) {
+            A[i] = ni();
+        }
+        int[] L = new int[N];
+        ArrayDeque<Integer> stackL = new ArrayDeque<>();
+        for (int i = 0; i < N; i++) {
+            while((!stackL.isEmpty()) && A[stackL.peekFirst()] >= A[i]){
+                stackL.removeFirst();
+            }
+            if(stackL.size()==0){
+                L[i] = 0;
+                stackL.addFirst(i);
+            }else {
+                L[i] = stackL.peekFirst()+1;
+                stackL.addFirst(i);
+            }
+        }
+        int[] R = new int[N];
+        ArrayDeque<Integer> stackR = new ArrayDeque<>();
+        for (int i = N-1; i >= 0; i--) {
+            while((!stackR.isEmpty()) && A[stackR.peekFirst()] >= A[i]){
+                stackR.removeFirst();
+            }
+            if(stackR.size()==0){
+                R[i] = N;
+                stackR.addFirst(i);
+            }else {
+                R[i] = stackR.peekFirst();
+                stackR.addFirst(i);
+            }
+        }
+        // System.out.println(Arrays.toString(L));
+        // System.out.println(Arrays.toString(R));
+        int ans = 0;
+        for (int i = 0; i < N; i++) {
+            ans = Math.max(ans, A[i] * (R[i] - L[i]));
+        }
         out.println(ans);
     }
 
