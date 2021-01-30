@@ -1,5 +1,5 @@
 import java.math.BigInteger;
-public class ModComb{
+class ModComb{
     int mod;
     int N;
     int[] nfac;
@@ -23,6 +23,10 @@ public class ModComb{
     int comb(int n, int r){
         int ret = (int)((nfac[n] * 1L * nfacinv[r]) % mod);
         ret = (int)((ret * 1L * nfacinv[n-r]) % mod);
+        return ret;
+    }
+    int perm(int n, int r){
+        int ret = (int)((nfac[n] * 1L * nfacinv[n-r]) % mod);
         return ret;
     }
 }
