@@ -8,54 +8,42 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
-        HashMap<Integer,Integer> pairs = new HashMap<>();
-        ArrayList<ArrayDeque<Integer>> ques = new ArrayList<>();
-        for (int i = 0; i < N; i++) {
-            ques.add(new ArrayDeque<>());
-            for (int j = 0; j < N-1; j++) {
-                int A = ni()-1;
-                ques.get(i).addLast(A);
+        int H = ni();
+        int W = ni();
+        int[][] A = new int[H][W];
+        int[][] B = new int[H][W];
+        for (int i = 0; i < H; i++) {
+            for (int j = 0; j < W; j++) {
+                A[i][j] = ni();
             }
         }
-        for (int i = 0; i < N; i++) {
-            int opp = ques.get(i).peek();
-            if(ques.get(opp).peek() == i) {
-                pairs.put(i, opp);
-                pairs.put(opp, i);
-            };
-        }
-        int ans = 0;
-        int played = 0;
-        while(!pairs.isEmpty()){
-            HashSet<HashSet<Integer>> games = new HashSet<>();
-            for (Integer player : pairs.keySet()) {
-                games.add(new HashSet<>(Arrays.asList(player, pairs.get(player))));
+        for (int i = 0; i < H; i++) {
+            for (int j = 0; j < W; j++) {
+                B[i][j] = ni();
             }
-            for (HashSet<Integer> game : games) {
-                for (Integer player : game) {
-                    ques.get(player).removeFirst();
-                    pairs.remove(player);
-                }
-                for (Integer player : game) {
-                    if(ques.get(player).size()>0){
-                        int opp = ques.get(player).peek();
-                        if(ques.get(opp).size()>0 && ques.get(opp).peek()==player){
-                            pairs.put(player, opp);
-                            pairs.put(opp, player);
-                        }
-                    }
+        }
+        int N = 80*80*2;
+        boolean[][][] dp = new boolean[H][W][N*2+1];
+        dp[0][0][A[0][0]-B[0][0]+N] = true;
+        dp[0][0][-A[0][0]+B[0][0]+N] = true;
+        for (int i = 0; i < H; i++) {
+            for (int j = 0; j < W; j++) {
+                for (int k = 0; k < N*2+1; k++) {
+                    if(dp[i][j][k]==false) continue;
+                    if(i+1<H) dp[i+1][j][k+A[i+1][j]-B[i+1][j]] = true;
+                    if(i+1<H) dp[i+1][j][k+B[i+1][j]-A[i+1][j]] = true;
+                    if(j+1<W) dp[i][j+1][k+A[i][j+1]-B[i][j+1]] = true;
+                    if(j+1<W) dp[i][j+1][k+B[i][j+1]-A[i][j+1]] = true;
                 }
             }
-            played += games.size();
-            ans ++;
         }
-        if(played == N*(N-1)/2){
-            out.println(ans);
-        }else{
-            out.println(-1);
+        int ans = Integer.MAX_VALUE;
+        for (int i = 0; i < N*2+1; i++) {
+            if(dp[H-1][W-1][i]) ans = Math.min(ans, Math.abs(i-N));
         }
+        out.println(ans);
     }
+
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     

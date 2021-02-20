@@ -9,53 +9,33 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
-        HashMap<Integer,Integer> pairs = new HashMap<>();
-        ArrayList<ArrayDeque<Integer>> ques = new ArrayList<>();
+        long K = nl();
+        int ns = 41;
+        int[] count = new int[ns];
+        long[] ai = new long[N];
         for (int i = 0; i < N; i++) {
-            ques.add(new ArrayDeque<>());
-            for (int j = 0; j < N-1; j++) {
-                int A = ni()-1;
-                ques.get(i).addLast(A);
-            }
-        }
-        for (int i = 0; i < N; i++) {
-            int opp = ques.get(i).peek();
-            if(ques.get(opp).peek() == i) {
-                pairs.put(i, opp);
-                pairs.put(opp, i);
-            };
-        }
-        int ans = 0;
-        int played = 0;
-        while(!pairs.isEmpty()){
-            HashSet<HashSet<Integer>> games = new HashSet<>();
-            for (Integer player : pairs.keySet()) {
-                games.add(new HashSet<>(Arrays.asList(player, pairs.get(player))));
-            }
-            for (HashSet<Integer> game : games) {
-                for (Integer player : game) {
-                    ques.get(player).removeFirst();
-                    pairs.remove(player);
-                }
-                for (Integer player : game) {
-                    if(ques.get(player).size()>0){
-                        int opp = ques.get(player).peek();
-                        if(ques.get(opp).size()>0 && ques.get(opp).peek()==player){
-                            pairs.put(player, opp);
-                            pairs.put(opp, player);
-                        }
-                    }
+            long a = nl();
+            ai[i] = a;
+            for (int j = 0; j < ns; j++) {
+                if(((a>>j) & 1)==1){
+                    count[j] ++;
                 }
             }
-            played += games.size();
-            ans ++;
         }
-        if(played == N*(N-1)/2){
-            out.println(ans);
-        }else{
-            out.println(-1);
+        long x = 0;
+        for (int i = 40; i >=0 ; i--) {
+            if(count[i] < N-count[i]){
+                if((x+1<<(long)i) <= K)x += 1<<(long)i;
+            }
         }
+        // System.out.println(x);
+        long ans = 0;
+        for (int i = 0; i < N; i++) {
+            ans += ai[i] ^ x;
+        }
+        out.println(ans);
     }
+
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     

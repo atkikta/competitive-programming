@@ -8,12 +8,34 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
- 
-        long ans = 0;
+        X = nl();
+        long Y = nl();
+        memo = new HashMap<>();
+        long ans = dfs(Y);
         out.println(ans);
     }
-
+    long X;
+    HashMap<Long, Long> memo;
+    long dfs(long y){
+        if(memo.containsKey(y)) return memo.get(y);
+        else if(y==1){
+            memo.put(y, Math.abs(y-X));
+            return Math.abs(y-X);
+        }
+        else if(y%2==1){
+            long ret = Math.abs(y-X);
+            ret = Math.min(ret, dfs((y-1)/2)+2);
+            ret = Math.min(ret, dfs((y+1)/2)+2);
+            memo.put(y, ret);
+            return ret;
+        }
+        else{
+            long ret = Math.abs(y-X);
+            ret = Math.min(ret, dfs(y/2)+1);
+            memo.put(y, ret);
+            return ret;
+        }
+    }
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     

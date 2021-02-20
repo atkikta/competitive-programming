@@ -3,59 +3,47 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.*;
  
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
-        HashMap<Integer,Integer> pairs = new HashMap<>();
-        ArrayList<ArrayDeque<Integer>> ques = new ArrayList<>();
-        for (int i = 0; i < N; i++) {
-            ques.add(new ArrayDeque<>());
-            for (int j = 0; j < N-1; j++) {
-                int A = ni()-1;
-                ques.get(i).addLast(A);
+        double X = nd();
+        double Y = nd();
+        double R = nd();
+        BigDecimal r = BigDecimal.valueOf(R);
+
+        int maxy = (int)(Y+R+1)+1;
+        int miny = (int)(Y-R-1)-1;
+        // System.out.println(String.format("%f %f %d %d", Y, R, maxy, miny));
+        long ans = 0;
+        for (int yi = miny; yi <= maxy; yi++) {
+            if(Y+R<yi || yi<Y-R) continue;
+            BigDecimal yy = BigDecimal.valueOf(yi-Y);
+            BigDecimal sqd = r.multiply(r).subtract(yy.multiply(yy));
+            BigDecimal rsqd =
+            double rsqd = Math.sqrt(sqd);
+            double dxl = X - rsqd;
+            int dxll = (int)(dxl-1) -1;
+            int dxlr = (int)(dxl+1) +1;
+            int xl = 0;
+            for (int i = dxll+1; i <=dxlr; i++) {
+                if()
             }
+            double dxr = X + rsqd;
+            int xr = 0;
+            if(X+rsqd>=0) xr = (int)(X+rsqd);
+            else xr = (int)(X+rsqd-1);
+            int xl = 0;
+            if(X-rsqd>=0) xl = (int)(X-rsqd)+1;
+            else xl = (int)(X-rsqd);
+            if(xl <= xr) ans += (xr-xl+1);
+            System.out.println(String.format("%d %f %d %d", yi, rsqd, xl,xr));
         }
-        for (int i = 0; i < N; i++) {
-            int opp = ques.get(i).peek();
-            if(ques.get(opp).peek() == i) {
-                pairs.put(i, opp);
-                pairs.put(opp, i);
-            };
-        }
-        int ans = 0;
-        int played = 0;
-        while(!pairs.isEmpty()){
-            HashSet<HashSet<Integer>> games = new HashSet<>();
-            for (Integer player : pairs.keySet()) {
-                games.add(new HashSet<>(Arrays.asList(player, pairs.get(player))));
-            }
-            for (HashSet<Integer> game : games) {
-                for (Integer player : game) {
-                    ques.get(player).removeFirst();
-                    pairs.remove(player);
-                }
-                for (Integer player : game) {
-                    if(ques.get(player).size()>0){
-                        int opp = ques.get(player).peek();
-                        if(ques.get(opp).size()>0 && ques.get(opp).peek()==player){
-                            pairs.put(player, opp);
-                            pairs.put(opp, player);
-                        }
-                    }
-                }
-            }
-            played += games.size();
-            ans ++;
-        }
-        if(played == N*(N-1)/2){
-            out.println(ans);
-        }else{
-            out.println(-1);
-        }
+        out.println(ans);
     }
+
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     

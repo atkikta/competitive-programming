@@ -4,7 +4,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.*;
 
-import org.graalvm.compiler.lir.aarch64.AArch64AtomicMove.CompareAndSwapOp;
  
 public class Main {
  
@@ -12,31 +11,63 @@ public class Main {
         int N = ni();
         int K = ni();
         ArrayList<Integer> A = new ArrayList<>();
-        ArrayList<Integer> mins = new ArrayList<>();
-        ArrayList<Integer> puls = new ArrayList<>();
-        int nummin = 0;
-        for (int i = 0; i < A.length; i++) {
+        ArrayList<Integer> pos = new ArrayList<>();
+        ArrayList<Integer> neg = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
             int a = ni();
             A.add(a);
-            if(a<0) nummin++;
-            if(a>=0) puls.add(a);
-            if(a<0) mins.add(a);
+            if(a<0) neg.add(a);
+            else pos.add(a);
         }
-        if(nummin == N && K%2==1){
-            int ans=1;
-            Collections.sort(A,Comparator.reverseOrder());
+        boolean ok = false;
+        if(pos.size()>0){
+            if(N==K){
+                ok = (neg.size()%2==0) ;
+            }else{
+                ok = true;
+            }
+        }else{
+            ok = (K%2==0);
+        }
+        if(!ok){
+            Collections.sort(A,
+             (x,y)->Integer.valueOf(Math.abs(x)).compareTo(Integer.valueOf(Math.abs(y))));
+            int ans = 1;
             for (int i = 0; i < K; i++) {
                 ans = mul(ans, A.get(i));
-                out.println(ans);
-                return;
             }
-        }
-        int ans = 1;
-        int count = 0;
-        int countm = 0;
-        Collections.sort(A, (x,y)->((Integer)(Math.abs(y))).compareTo(Math.abs(x)));
-        while(count < K) {
-            if(ans > 0)
+            if(ans<0) ans += mod;
+            out.println(ans);
+            return;
+        }else{
+            Collections.sort(pos);
+            Collections.sort(neg,Comparator.reverseOrder());
+            int ans = 1;
+            if(K%2==1){
+                ans = mul(ans, pos.get(pos.size()-1));
+                pos.remove(pos.size()-1);
+            }
+            ArrayList<Long> ps = new ArrayList<>();
+            while(pos.size()>=2){
+                long p = pos.get(pos.size()-1);
+                pos.remove(pos.size()-1);
+                p*= pos.get(pos.size()-1);
+                pos.remove(pos.size()-1);
+                ps.add(p);
+            }
+            while(neg.size()>=2){
+                long p = neg.get(neg.size()-1);
+                neg.remove(neg.size()-1);
+                p*= neg.get(neg.size()-1);
+                neg.remove(neg.size()-1);
+                ps.add(p);
+            }
+            Collections.sort(ps, Comparator.reverseOrder());
+            for (int i = 0; i < K/2; i++) {
+                ans = mul(ans, (int)(ps.get(i)%mod));
+            }
+            if(ans<0) ans += mod;
+            out.println(ans);
         }
     }
 

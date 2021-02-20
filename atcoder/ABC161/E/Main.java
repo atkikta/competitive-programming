@@ -9,53 +9,38 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
-        HashMap<Integer,Integer> pairs = new HashMap<>();
-        ArrayList<ArrayDeque<Integer>> ques = new ArrayList<>();
+        int K = ni();
+        int C = ni();
+        String S = ns();
+        int[] off = new int[N];
         for (int i = 0; i < N; i++) {
-            ques.add(new ArrayDeque<>());
-            for (int j = 0; j < N-1; j++) {
-                int A = ni()-1;
-                ques.get(i).addLast(A);
+            if(S.charAt(i)=='x'){
+                off[i] = 1;
             }
+        }
+        int[] ffill = new int[N];
+        Arrays.fill(ffill, -1);
+        int day = 0;
+        for (int i = 0; i < K; i++) {
+            while(off[day]==1) day++;
+            ffill[day] = i;
+            day += (C+1);
+        }
+        int[] bfill = new int[N];
+        Arrays.fill(bfill, -1);
+        day = N-1;
+        for (int i = K-1; i >=0; i--) {
+            while(off[day]==1) day--;
+            bfill[day] = i;
+            day -= (C+1);    
         }
         for (int i = 0; i < N; i++) {
-            int opp = ques.get(i).peek();
-            if(ques.get(opp).peek() == i) {
-                pairs.put(i, opp);
-                pairs.put(opp, i);
-            };
-        }
-        int ans = 0;
-        int played = 0;
-        while(!pairs.isEmpty()){
-            HashSet<HashSet<Integer>> games = new HashSet<>();
-            for (Integer player : pairs.keySet()) {
-                games.add(new HashSet<>(Arrays.asList(player, pairs.get(player))));
+            if(ffill[i]>=0 && bfill[i]>=0 && ffill[i]==bfill[i]){
+                out.println(i+1);
             }
-            for (HashSet<Integer> game : games) {
-                for (Integer player : game) {
-                    ques.get(player).removeFirst();
-                    pairs.remove(player);
-                }
-                for (Integer player : game) {
-                    if(ques.get(player).size()>0){
-                        int opp = ques.get(player).peek();
-                        if(ques.get(opp).size()>0 && ques.get(opp).peek()==player){
-                            pairs.put(player, opp);
-                            pairs.put(opp, player);
-                        }
-                    }
-                }
-            }
-            played += games.size();
-            ans ++;
-        }
-        if(played == N*(N-1)/2){
-            out.println(ans);
-        }else{
-            out.println(-1);
         }
     }
+
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     

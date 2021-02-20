@@ -9,51 +9,86 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
-        HashMap<Integer,Integer> pairs = new HashMap<>();
-        ArrayList<ArrayDeque<Integer>> ques = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> nodes = new ArrayList<>();
         for (int i = 0; i < N; i++) {
-            ques.add(new ArrayDeque<>());
-            for (int j = 0; j < N-1; j++) {
-                int A = ni()-1;
-                ques.get(i).addLast(A);
+            int x = ni();
+            int y = ni();
+            nodes.add(new ArrayList<>(Arrays.asList(x, y, i)));
+
+        }
+        ArrayList<Edge> edges = new ArrayList<>();
+        Collections.sort(nodes, (x,y)->x.get(0).compareTo(y.get(0)));
+        for (int i = 1; i < N; i++) {
+            int fromid =nodes.get(i-1).get(2);
+            int toid =nodes.get(i).get(2);
+            int dist = Math.min(Math.abs(nodes.get(i-1).get(0)-nodes.get(i).get(0)),Math.abs(nodes.get(i-1).get(1)-nodes.get(i).get(1)));
+            edges.add(new Edge(fromid, toid, dist));
+        }
+        Collections.sort(nodes, (x,y)->x.get(1).compareTo(y.get(1)));
+        for (int i = 1; i < N; i++) {
+            int fromid =nodes.get(i-1).get(2);
+            int toid =nodes.get(i).get(2);
+            int dist = Math.min(Math.abs(nodes.get(i-1).get(0)-nodes.get(i).get(0)),Math.abs(nodes.get(i-1).get(1)-nodes.get(i).get(1)));
+            edges.add(new Edge(fromid, toid, dist));
+        }
+        Collections.sort(edges, (e1, e2)->e1.cost.compareTo(e2.cost));
+        UnionFind uf = new UnionFind(N);
+        long ans = 0;
+        for (Edge edge : edges) {
+            if(uf.find(edge.from) != uf.find(edge.to)){
+                uf.union(edge.from, edge.to);
+                ans+= edge.cost;
             }
         }
-        for (int i = 0; i < N; i++) {
-            int opp = ques.get(i).peek();
-            if(ques.get(opp).peek() == i) {
-                pairs.put(i, opp);
-                pairs.put(opp, i);
-            };
-        }
-        int ans = 0;
-        int played = 0;
-        while(!pairs.isEmpty()){
-            HashSet<HashSet<Integer>> games = new HashSet<>();
-            for (Integer player : pairs.keySet()) {
-                games.add(new HashSet<>(Arrays.asList(player, pairs.get(player))));
+
+        out.println(ans);
+    }
+    class UnionFind{
+        int[] par;
+        UnionFind(int n){
+            par = new int[n];
+            for (int i = 0; i < n; i++) {
+                par[i] = -1;
             }
-            for (HashSet<Integer> game : games) {
-                for (Integer player : game) {
-                    ques.get(player).removeFirst();
-                    pairs.remove(player);
-                }
-                for (Integer player : game) {
-                    if(ques.get(player).size()>0){
-                        int opp = ques.get(player).peek();
-                        if(ques.get(opp).size()>0 && ques.get(opp).peek()==player){
-                            pairs.put(player, opp);
-                            pairs.put(opp, player);
-                        }
-                    }
-                }
-            }
-            played += games.size();
-            ans ++;
         }
-        if(played == N*(N-1)/2){
-            out.println(ans);
-        }else{
-            out.println(-1);
+        int find (int n){
+            if(par[n] < 0){
+                return n;
+            }else{
+                return find(par[n]);
+            }
+        }
+        boolean union(int a, int b){
+            a = find(a);
+            b = find(b);
+            if(a == b) return false;
+            if(par[a] > par[b]){
+                int temp = b;
+                b = a;
+                a = temp;
+            }
+            par[a] += par[b];
+            par[b] = a;
+            return true;
+        }
+        int par(int n){
+            return par[n];
+        }
+        int size(int n){
+            return -par[find(n)];
+        }
+        boolean same(int a, int b){
+            return find(a) == find(b);
+        }
+    }
+    class Edge{
+        int from;
+        int to;
+        Integer cost;
+        public Edge(int from, int to, int cost){
+            this.from = from;
+            this.to = to;
+            this.cost = cost;
         }
     }
     final int mod = 1000000007;

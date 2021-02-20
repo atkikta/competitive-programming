@@ -9,51 +9,36 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
-        HashMap<Integer,Integer> pairs = new HashMap<>();
-        ArrayList<ArrayDeque<Integer>> ques = new ArrayList<>();
+        int K = ni();
+        int[] A = new int[N];
         for (int i = 0; i < N; i++) {
-            ques.add(new ArrayDeque<>());
-            for (int j = 0; j < N-1; j++) {
-                int A = ni()-1;
-                ques.get(i).addLast(A);
-            }
+            A[i] = ni();
         }
+        long[] csum = new long[N+1];
         for (int i = 0; i < N; i++) {
-            int opp = ques.get(i).peek();
-            if(ques.get(opp).peek() == i) {
-                pairs.put(i, opp);
-                pairs.put(opp, i);
-            };
+            csum[i+1] = csum[i] + A[i];
         }
-        int ans = 0;
-        int played = 0;
-        while(!pairs.isEmpty()){
-            HashSet<HashSet<Integer>> games = new HashSet<>();
-            for (Integer player : pairs.keySet()) {
-                games.add(new HashSet<>(Arrays.asList(player, pairs.get(player))));
-            }
-            for (HashSet<Integer> game : games) {
-                for (Integer player : game) {
-                    ques.get(player).removeFirst();
-                    pairs.remove(player);
-                }
-                for (Integer player : game) {
-                    if(ques.get(player).size()>0){
-                        int opp = ques.get(player).peek();
-                        if(ques.get(opp).size()>0 && ques.get(opp).peek()==player){
-                            pairs.put(player, opp);
-                            pairs.put(opp, player);
-                        }
-                    }
-                }
-            }
-            played += games.size();
-            ans ++;
+        HashMap<Long, Integer> count = new HashMap<>();
+        for (int i = 0; i < N+1; i++) {
+            long rem = csum[i] - i >0 ? (csum[i] - i) % K: (csum[i] - i+K) % K;
+            count.putIfAbsent(rem, 0);
+            count.put(rem, count.get(rem)+1);
         }
-        if(played == N*(N-1)/2){
-            out.println(ans);
-        }else{
-            out.println(-1);
+        System.out.println(count);
+        long ans = 0;
+        for (Integer num : count.values()) {
+            ans += num * (num-1) / 2;
+        }
+        out.println(ans);
+    }
+    class BinarySearch<T extends Comparable<? super T>>{
+        int upperBound(ArrayList<T> list, T target){
+            int i = Collections.binarySearch(list, target, (x,y)->(x.compareTo(y) > 0) ? 1 : -1);
+            return ~i;
+        }
+        int lowerBound(ArrayList<T> list, T target){
+            int i = Collections.binarySearch(list, target, (x,y)->(x.compareTo(y) >= 0) ? 1 : -1);
+            return ~i;
         }
     }
     final int mod = 1000000007;

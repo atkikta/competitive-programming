@@ -9,53 +9,76 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
-        HashMap<Integer,Integer> pairs = new HashMap<>();
-        ArrayList<ArrayDeque<Integer>> ques = new ArrayList<>();
+        int M = ni();
+        ArrayList<ArrayList<Integer>> graph  = new ArrayList<>();
         for (int i = 0; i < N; i++) {
-            ques.add(new ArrayDeque<>());
-            for (int j = 0; j < N-1; j++) {
-                int A = ni()-1;
-                ques.get(i).addLast(A);
+            graph.add(new ArrayList<>());
+        }
+        for (int i = 0; i < M; i++) {
+            int A = ni()-1;
+            int B = ni()-1;
+            graph.get(A).add(B);
+            graph.get(B).add(A);
+        }
+        int K = ni();
+        HashMap<Integer, Integer> ctoi = new HashMap<>();
+        int[] C = new int[K];
+        for (int i = 0; i < K; i++) {
+            int c = ni()-1;
+            ctoi.put(c, i);
+            C[i] = c;
+        }
+        long[][] dist = new long[K][K];
+        for (int i = 0; i < K; i++) {
+            for (int j = 0; j < K; j++) {
+                dist[i][j] = Long.MAX_VALUE/2;
             }
         }
-        for (int i = 0; i < N; i++) {
-            int opp = ques.get(i).peek();
-            if(ques.get(opp).peek() == i) {
-                pairs.put(i, opp);
-                pairs.put(opp, i);
-            };
-        }
-        int ans = 0;
-        int played = 0;
-        while(!pairs.isEmpty()){
-            HashSet<HashSet<Integer>> games = new HashSet<>();
-            for (Integer player : pairs.keySet()) {
-                games.add(new HashSet<>(Arrays.asList(player, pairs.get(player))));
-            }
-            for (HashSet<Integer> game : games) {
-                for (Integer player : game) {
-                    ques.get(player).removeFirst();
-                    pairs.remove(player);
-                }
-                for (Integer player : game) {
-                    if(ques.get(player).size()>0){
-                        int opp = ques.get(player).peek();
-                        if(ques.get(opp).size()>0 && ques.get(opp).peek()==player){
-                            pairs.put(player, opp);
-                            pairs.put(opp, player);
-                        }
+        for (int i = 0; i < K; i++) {
+            ArrayDeque<Integer> que = new ArrayDeque<>();
+            boolean[] visited = new boolean[N];
+            long[] distfromi = new long[N];
+            que.add(C[i]);
+            visited[C[i]] = true;
+            while(!que.isEmpty()){
+                int node = que.poll();
+                for (int next: graph.get(node)) {
+                    if(!visited[next]){
+                        visited[next] = true;
+                        distfromi[next] = distfromi[node] + 1;
+                        if(ctoi.containsKey(next)) dist[i][ctoi.get(next)] = distfromi[next];
+                        que.add(next);
                     }
                 }
             }
-            played += games.size();
-            ans ++;
         }
-        if(played == N*(N-1)/2){
-            out.println(ans);
-        }else{
+        int nset = 1<<K;
+        long dp[][] = new long[K][nset];
+        for (int i = 0; i < K ; i++) {
+            Arrays.fill(dp[i], Long.MAX_VALUE/2);
+            dp[i][1<<i] = 0;
+        }
+        for (int i = 0; i < nset; i++) {
+            for (int j = 0; j < K; j++) {
+                if((i>>j & 1) == 0) continue;
+                for (int k = 0; k < K; k++) {
+                    dp[k][i | 1<<k] = Math.min(dp[k][i | 1<<k], dp[j][i] + dist[j][k]);
+                }
+            }
+        }
+        // print2DArray(dp);
+        long ans = Long.MAX_VALUE/2;
+        for (int i = 0; i < K; i++) {
+            ans = Math.min(ans, dp[i][nset-1]);
+        }
+        if(ans>=Long.MAX_VALUE/2){
             out.println(-1);
+            return;
+        }else{
+            out.println(ans+1);
         }
     }
+
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     
@@ -125,6 +148,11 @@ public class Main {
         return res;
     }
     void print2DArray(int[][] a){
+        for (int i = 0; i < a.length; i++) {
+            System.out.println(Arrays.toString(a[i]));
+        }
+    }
+    void print2DArray(long[][] a){
         for (int i = 0; i < a.length; i++) {
             System.out.println(Arrays.toString(a[i]));
         }
