@@ -113,4 +113,32 @@ class MathLib{
 		if (u < 0) u += m;
 		return u;
 	}
+    public static long carryDecimal(String s, int afterdecimal){
+        if(!s.contains(".")){
+            long ret = Long.valueOf(s);
+            for (int i = 0; i < afterdecimal; i++) {
+                ret *= 10;
+            }
+            return ret;
+        }
+        long res = 0;
+        long posneg = 1;
+        for (int i = 0; i<s.length(); i++) {
+            char c = s.charAt(i);
+            if(c == '-') posneg = -1;
+            else if(c == '.'){
+                for (int j = 0; j < afterdecimal; j++) {
+                    i++;
+                    if(i < s.length()) res = res * 10 + (s.charAt(i) - '0');
+                    else res = res * 10;
+                }
+                break;
+            }
+            else{
+                res = res *10 + (c - '0');
+            }
+        }
+        return res * posneg;
+    }
+
 }
