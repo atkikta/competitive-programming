@@ -8,7 +8,25 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
+        int n = ni();
+        int m = ni();
+        int minutes = n * 60 + m;
+        double dig = (6 - 0.5) * minutes;
+        while(dig>360.0) dig = dig -360;
+        if(dig>180.0) dig = 360.0 - dig;
+        out.println(dig);
+        // n = n % 12;
+        // double hour = n/12.0;
+        // double minu = m/60.0;
+        // double dshort = 360 * hour + 360 / 12 * minu;
+        // double dlong = 360 * minu;
+        // // System.out.println(hour);
+        // // System.out.println(minu);
+        // // System.out.println(dshort);
+        // // System.out.println(dlong);
+        // double ans = Math.abs(dlong - dshort);
+        // if(ans > 180.0) ans = ans -180.0;
+        // out.println(ans);
     }
 
     final int mod = 1000000007;

@@ -9,6 +9,17 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int K = ni();
+        int X = ni();
+        int Y = ni();
+        long ans = 0;
+        if(N<=K){
+            ans += X * N;
+        }else{
+            ans += X * K;
+            ans += Y * (N-K);
+        }
+        out.println(ans);
     }
 
     final int mod = 1000000007;

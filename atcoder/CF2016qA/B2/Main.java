@@ -9,6 +9,20 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int[] a = new int[N];
+        for (int i = 0; i < N; i++) {
+            a[i] = ni()-1;
+        }
+        int[] seen = new int[N];
+        int count = 0;
+        for (int i = 0; i < N; i++) {
+            if(seen[i] == 1) continue;
+            if(a[a[i]] == i){
+                count++;
+                seen[a[i]] = 1;
+            }
+        }
+        out.println(count);
     }
 
     final int mod = 1000000007;

@@ -9,9 +9,42 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int M = ni();
+        int K = ni();
+        if(N==1 && M==1){
+            out.println(K);
+        }else if(N==1){
+            int ans = 0;
+            for (int p = 1; p <=K; p++) {
+                long km = MathLib.pow_mod(K-p+1, M, mod);
+                long km1 = MathLib.pow_mod(K-p, M, mod);
+                ans = add(ans, sub((int)km, (int)km1));
+            }
+            out.println(ans);
+        }else if(M==1){
+            int ans = 0;
+            for (int p = 1; p <=K; p++) {
+                long kn = MathLib.pow_mod(K-p+1, N, mod);
+                long kn1 = MathLib.pow_mod(K-p, N, mod);
+                ans = add(ans, sub((int)kn, (int)kn1));
+            }
+            out.println(ans);
+
+        }else{
+            int ans = 0;
+            for (int p = 1; p <= K; p++) {
+                long pn = MathLib.pow_mod(p, N, mod);
+                long pn1 = MathLib.pow_mod(p-1, N, mod);
+                int pni = sub((int)pn, (int)pn1);
+                long pm = MathLib.pow_mod(K-p+1, M, mod);
+                // System.out.println(String.format("%d %d %d",pn, pn1, pm));
+                ans = add(ans, mul(pni, (int)pm));
+            }
+            out.println(ans);
+        }
     }
 
-    final int mod = 1000000007;
+    final int mod = 998244353;
     final BigInteger MOD = BigInteger.valueOf(mod);
     
     long gcd(long num1,long num2) {
@@ -98,7 +131,6 @@ public class Main {
         out.close();
     }
 }
-
 class MathLib{
     private static long safe_mod(long x, long m){
         x %= m;
@@ -214,10 +246,13 @@ class MathLib{
 		if (u < 0) u += m;
 		return u;
 	}
-    
     public static long carryDecimal(String s, int afterdecimal){
         if(!s.contains(".")){
-            return Long.valueOf(s);
+            long ret = Long.valueOf(s);
+            for (int i = 0; i < afterdecimal; i++) {
+                ret *= 10;
+            }
+            return ret;
         }
         long res = 0;
         long posneg = 1;
@@ -238,4 +273,5 @@ class MathLib{
         }
         return res * posneg;
     }
+
 }

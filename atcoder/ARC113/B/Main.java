@@ -8,7 +8,31 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
+        long a = nl();
+        long b = nl();
+        long c = nl();
+        if(a%10==0 || a%10==1||a%10==5||a%10==6){
+            out.println(a%10);
+            return;
+        }else if(a%10==4){
+            if(b%2==0) out.println(6);
+            else out.println(4);
+            return;
+        }else if(a%10==9){
+            if(b%2==0) out.println(1);
+            else out.println(9);
+            return;
+        }else{
+            long time = MathLib.pow_mod(b,c,4);
+            if(time==0) time = 4;
+            // System.out.println(time);
+            int base = 1;
+            for (long i = 0; i < time; i++) {
+                base *= (a%10);
+            }
+            // System.out.println(base);
+            out.println(base%10);
+        }
     }
 
     final int mod = 1000000007;
@@ -98,6 +122,7 @@ public class Main {
         out.close();
     }
 }
+
 
 class MathLib{
     private static long safe_mod(long x, long m){
@@ -214,10 +239,13 @@ class MathLib{
 		if (u < 0) u += m;
 		return u;
 	}
-    
     public static long carryDecimal(String s, int afterdecimal){
         if(!s.contains(".")){
-            return Long.valueOf(s);
+            long ret = Long.valueOf(s);
+            for (int i = 0; i < afterdecimal; i++) {
+                ret *= 10;
+            }
+            return ret;
         }
         long res = 0;
         long posneg = 1;
@@ -238,4 +266,5 @@ class MathLib{
         }
         return res * posneg;
     }
+
 }

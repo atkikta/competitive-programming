@@ -8,9 +8,36 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
+        n = ni();
+        int x = ni()-1;
+        h = new int[n];
+        for (int i = 0; i < n; i++) {
+            h[i] = ni();
+        }
+        graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>());
+        }
+        for (int i = 0; i < n-1; i++) {
+            int a = ni()-1;
+            int b = ni()-1;
+            graph.get(a).add(b);
+            graph.get(b).add(a);
+        }
+        int ans = dfs(x, -1);
     }
-
+    int dfs(int node, int before){
+        int count = 0;
+        for (Integer next : graph.get(node)) {
+            if(next == before) continue;
+            count += dfs(next, node);
+        }
+        count += h[node];
+        return count;
+    }
+    int[] h;
+    int n;
+    ArrayList<ArrayList<Integer>> graph;
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     

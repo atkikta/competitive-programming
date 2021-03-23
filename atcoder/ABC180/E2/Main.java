@@ -4,11 +4,42 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.util.*;
+
  
 public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int[] x = new int[N];
+        int[] y = new int[N];
+        int[] z = new int[N];
+        for (int i = 0; i < N; i++) {
+            x[i] = ni();
+            y[i] = ni();
+            z[i] = ni();
+        }
+        int ns = 1<<N;
+        int[][] dp = new int[ns][N];
+        for (int i = 0; i < ns; i++) {
+            Arrays.fill(dp[i], Integer.MAX_VALUE/2);
+        }
+        dp[1][0] = 0;
+        for (int i = 1; i < ns; i++) {
+            for (int j = 0; j < N; j++) {
+                if((i>>j & 1) != 1) continue;
+                for (int k = 0; k < N; k++) {
+                    int cost = Math.abs(x[j] - x[k]) + Math.abs(y[j] - y[k]) + Math.max(0, z[k] - z[j]);
+                    // System.out.println(String.format("%d %d %d", j, k, cost));
+                    dp[i|1<<k][k] = Math.min(dp[i|1<<k][k], dp[i][j] + cost);
+                }
+            }
+        }
+        // print2DArray(dp);
+        // int ans = Integer.MAX_VALUE;
+        // for (int i = 0; i < N; i++) {
+        //     ans = Math.min(ans, dp[ns-1][i] + Math.abs(x[i] - x[0]) + Math.abs(y[i] - y[0]) + Math.max(0, z[i] - z[0]));
+        // }
+        out.println(dp[ns-1][0]);
     }
 
     final int mod = 1000000007;

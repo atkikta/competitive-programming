@@ -9,6 +9,41 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int K = ni();
+        int a = N;
+        for (int i = 0; i < K; i++) {
+            a = f1(a) - f2(a);
+        }
+        out.println(a);
+
+    }
+    int f1(int n){
+        String s = String.valueOf(n);
+        char[] c = s.toCharArray();
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i < c.length; i++) {
+            list.add(c[i]-'0');
+        }
+        Collections.sort(list,Comparator.reverseOrder());
+        int ret = 0;
+        for (Integer d : list) {
+            ret = ret * 10 + d;
+        }
+        return ret;
+    }
+    int f2(int n){
+        String s = String.valueOf(n);
+        char[] c = s.toCharArray();
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i < c.length; i++) {
+            list.add(c[i]-'0');
+        }
+        Collections.sort(list);
+        int ret = 0;
+        for (Integer d : list) {
+            ret = ret * 10 + d;
+        }
+        return ret;
     }
 
     final int mod = 1000000007;

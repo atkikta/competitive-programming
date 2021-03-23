@@ -9,6 +9,18 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int[] count = new int[N+1];
+        for (int x = 1;  x <= 100; x++) {
+            for (int y = 1; y <= 100; y++) {
+                for (int z = 1; z <= 100; z++) {
+                    int val = x*x+y*y+z*z+x*y+x*z+y*z;
+                    if(val<=N)count[val]++;
+                }
+            }
+        }
+        for (int i = 1; i <= N; i++) {
+            out.println(count[i]);
+        }
     }
 
     final int mod = 1000000007;

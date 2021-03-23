@@ -9,6 +9,43 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int P = ni();
+        String s = ns();
+        if(P==2){
+            long ans = 0;
+            for (int i = 0; i < N; i++) {
+                if((s.charAt(i)-'0')%2==0){
+                    ans += i+1;
+                }
+            }
+            out.println(ans);
+            return;
+        }else if(P==5){
+            long ans = 0;
+            for (int i = 0; i < N; i++) {
+                if((s.charAt(i)=='0')||(s.charAt(i)=='5')){
+                    ans += i+1;
+                }
+            }
+            out.println(ans);
+            return;
+        }
+        int[] count = new int[P];
+        count[0] ++;
+        int rem = 0;
+        int base = 1;
+        for (int i = 0; i < N; i++) {
+            rem = rem + (s.charAt(N-1-i)-'0') * base;
+            rem = rem % P;
+            base = (base * 10) % P;
+            count[rem]++;
+        }
+        // System.out.println(Arrays.toString(count));
+        long ans = 0;
+        for (int i = 0; i < count.length; i++) {
+            ans += count[i] *1L* (count[i]-1) /2;
+        }
+        out.println(ans);
     }
 
     final int mod = 1000000007;

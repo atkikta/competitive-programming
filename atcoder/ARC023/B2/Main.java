@@ -8,7 +8,24 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
+        int R = ni();
+        int C = ni();
+        int D = ni();
+        int[][] A = new int[R][C];
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                A[i][j] = ni();
+            }
+        }
+        int ans = 0;
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                if(i+j <= D && (i+j)%2 == D%2){
+                    ans = Math.max(ans, A[i][j]);
+                }
+            }
+        }
+        out.println(ans);
     }
 
     final int mod = 1000000007;

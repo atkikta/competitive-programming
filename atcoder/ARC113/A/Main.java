@@ -8,7 +8,17 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
+        long K = nl();
+        long ans = 0;
+        for (long a = 1; a <= K; a++) {
+            for (long b = 1; b <= K; b++) {
+                if(a*b>K) break;
+                long maxc = K/(a*b);
+                ans += maxc;
+            }
+        }
+
+        out.println(ans);
     }
 
     final int mod = 1000000007;

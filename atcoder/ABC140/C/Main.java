@@ -9,6 +9,21 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int[] b = new int[N-1];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = ni();
+        }
+        int[] a = new int[N];
+        a[0] = b[0];
+        a[N-1] = b[N-2];
+        for (int i = 0; i < N-2; i++) {
+            a[i+1] = Math.min(b[i], b[i+1]);
+        }
+        long ans = 0;
+        for (int i = 0; i < a.length; i++) {
+            ans += a[i];
+        }
+        out.println(ans);
     }
 
     final int mod = 1000000007;

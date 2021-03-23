@@ -9,6 +9,12 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        String s = ns();
+        if(s.length()<=N){
+            System.out.println(s);
+        }else{
+            System.out.println(s.substring(0, N) + "...");
+        }
     }
 
     final int mod = 1000000007;

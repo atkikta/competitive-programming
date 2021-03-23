@@ -8,7 +8,9 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
+        String s = ns();
+
+        out.println(MathLib.carryDecimal(s, 4));
     }
 
     final int mod = 1000000007;

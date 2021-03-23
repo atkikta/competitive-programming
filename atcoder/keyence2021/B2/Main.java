@@ -9,6 +9,25 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int K = ni();
+        int[] count = new int[N+1];
+        for (int i = 0; i < N; i++) {
+            int a = ni();
+            count[a]++;
+        }
+        int alive = K;
+        int aliveval = 0;
+        long ans = 0;
+        for (int i = 0; i <= N; i++) {
+            if(count[i]==0) continue;
+            int nfix = Math.max(0, alive - count[i]);
+            // System.out.println(String.format("%d %d %d %d", alive, aliveval, ans, nfix));
+            ans += nfix * 1L * aliveval;
+            alive = Math.min(alive, count[i]);
+            aliveval = i+1;
+        }
+        ans += alive * 1L * aliveval;
+        out.println(ans);
     }
 
     final int mod = 1000000007;

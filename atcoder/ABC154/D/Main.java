@@ -9,6 +9,28 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int K = ni();
+        int[] p = new int[N];
+        for (int i = 0; i < N; i++) {
+            p[i] = ni();
+        }
+        int[] csum = new int[N+1];
+        for (int i = 0; i < N; i++) {
+            csum[i+1] = csum[i] + p[i];
+        }
+        int maxi = 0;
+        int maxe = 0;
+        for (int i = 0; i <= N-K; i++) {
+            if(maxe<csum[i+K] - csum[i]){
+                maxe = csum[i+K] - csum[i];
+                maxi = i;
+            }
+        }
+        double ans = 0;
+        for (int i = maxi; i < maxi+K; i++) {
+            ans += (1 + p[i])/ 2.0;
+        }
+        out.println(ans);
     }
 
     final int mod = 1000000007;

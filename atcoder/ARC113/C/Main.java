@@ -8,50 +8,25 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
-        int[] a = new int[N];
-        for (int i = 0; i < N; i++) {
-            a[i] = ni();
-        }
-        int[] b = new int[N];
-        for (int i = 0; i < N; i++) {
-            b[i] = ni();
-        }
-        int[] p = new int[N];
-        int[] pinv = new int[N];
-        for (int i = 0; i < N; i++) {
-            p[i] = ni()-1;
-            pinv[p[i]] = i;
-        }
-        ArrayList<ArrayList<Integer>> users = new ArrayList<>();
-        for (int i = 0; i < N; i++) {
-            users.add(new ArrayList<>(Arrays.asList(a[i], i)));
-        }
-        Collections.sort(users, (x,y)->(x.get(0).compareTo(y.get(0))));
-        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
-        for (int i = 0; i < N; i++) {
-            int userA = users.get(i).get(1);
-            int percA = p[userA];
-            int userB = pinv[userA];
-            int percB = p[userB];
-            if(percA != userA){
-                if(b[percB] >= a[userB] || b[percA] >= a[userA]){
-                    out.println(-1);
-                    return;
-                }
-                ans.add(new ArrayList<>(Arrays.asList(userA, userB)));
-                p[userA] = percB;
-                pinv[percB] = userA;
-                p[userB] = percA;
-                pinv[percA] = userB;
+        String s = ns();
+        int N = s.length();
+        HashMap<Character, Integer> count = new HashMap<>();
+        count.put(s.charAt(N-1), 1);
+        long ans = 0;
+        for (int i = N-2; i >=0; i--) {
+            if(s.charAt(i) == s.charAt(i+1)){
+                // System.out.println(count);
+                int samechar = 0;
+                if(count.containsKey(s.charAt(i))) samechar = count.get(s.charAt(i));
+                ans += N - i - 2 - samechar +1;
+                count = new HashMap<>();
+                count.put(s.charAt(i), N-i);
+            }else{
+                count.putIfAbsent(s.charAt(i), 0);
+                count.put(s.charAt(i), count.get(s.charAt(i))+1);
             }
         }
-        out.println(ans.size());
-        for (ArrayList<Integer> arrayList : ans) {
-            out.print(arrayList.get(0)+1);
-            out.print(" ");
-            out.println(arrayList.get(1)+1);
-        }
+        out.println(ans);
     }
 
     final int mod = 1000000007;

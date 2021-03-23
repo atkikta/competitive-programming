@@ -8,8 +8,81 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
+        int H = ni();
+        int W = ni();
+        int[][] grid = new int[H][W];
+        for (int i = 0; i < H; i++) {
+            String s = ns();
+            for (int j = 0; j < W; j++) {
+                if(s.charAt(j)=='#') grid[i][j] = 1;
+            }
+        }
+        int[][] left = new int[H][W];
+        for (int i = 0; i < H; i++) {
+            int b = 0;
+            for (int j = 0; j < W; j++) {
+                if(grid[i][j]==1){
+                    left[i][j] = -1;
+                    b = j+1;
+                }else{
+                    left[i][j] = b;
+                }
+            }
+        }
+        // print2DArray(left);
+        int[][] right = new int[H][W];
+        for (int i = 0; i < H; i++) {
+            int b = W-1;
+            for (int j = W-1; j >=0; j--) {
+                if(grid[i][j]==1){
+                    right[i][j] = -1;
+                    b = j-1;
+                }else{
+                    right[i][j] = b;
+                }
+            }
+        }
+        // print2DArray(right);
+        int[][] up = new int[H][W];
+        for (int j = 0; j < W; j++) {
+            int b = 0;
+            for (int i = 0; i < H; i++) {
+                if(grid[i][j]==1){
+                    up[i][j] = -1;
+                    b = i+1;
+                }else{
+                    up[i][j] = b;
+                }
+            }
+        }
+        // print2DArray(up);
+        int[][] down = new int[H][W];
+        for (int j = 0; j < W; j++) {
+            int b = H-1;
+            for (int i = H-1; i >= 0; i--) {
+                if(grid[i][j]==1){
+                    down[i][j] = -1;
+                    b = i-1;
+                }else{
+                    down[i][j] = b;
+                }
+            }
+        }
+        // print2DArray(up);
+
+        int ans = 0;
+        for (int i = 0; i < H; i++) {
+            for (int j = 0; j < W; j++) {
+                if(grid[i][j] == 1) continue;
+                int count = down[i][j] - up[i][j] + right[i][j] - left[i][j]+1;
+                // out.println(String.format("%d %d %d %d", down[i][j],up[i][j],right[i][j],left[i][j]));
+                // out.println(String.format("%d %d %d", i, j, count));
+                ans = Math.max(ans, count);
+            }
+        }
+        out.println(ans);
     }
+
 
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);

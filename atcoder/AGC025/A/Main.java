@@ -9,6 +9,20 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int ans = Integer.MAX_VALUE;
+        for (int a = 1; a < N; a++) {
+            int b = N - a;
+            ans = Math.min(ans, digsum(a) + digsum(b));
+        }
+        out.println(ans);
+    }
+    int digsum(int x){
+        int res = 0;
+        while(x>0){
+            res += x%10;
+            x = x/10;
+        }
+        return res;
     }
 
     final int mod = 1000000007;

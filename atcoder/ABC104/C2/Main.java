@@ -8,7 +8,31 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
+        int D = ni();
+        int G = ni();
+        int[] p = new int[D];
+        int[] c = new int[D];
+        int ans = Integer.MAX_VALUE;
+        for (int i = 0; i < 1<<D; i++) {
+            int score = 0;
+            int pcount = 0;
+            int duncomp = 0;
+            for (int j = 0; j < D; j++) {
+                if((i>>D & 1)==1){
+                    score += p[j] * j * 100+ c[j];
+                    pcount += p[j];
+                }else{
+                    duncomp = Math.max(duncomp,j);
+                }
+                if(score>G) ans = Math.min(ans, pcount);
+                else{
+                    score += (p[duncomp]-1) * duncomp * 100;
+                    pcount += p[duncomp] -1;
+                    if(score>G) ans = Math.min(ans, pcount);
+                }
+            }
+        }
+        out.println(ans);
     }
 
     final int mod = 1000000007;

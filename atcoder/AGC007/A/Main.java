@@ -8,9 +8,36 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
+        H = ni();
+        W = ni();
+        grid = new int[H][W];
+        int count = 0;
+        for (int i = 0; i < H; i++) {
+            String s = ns();
+            for (int j = 0; j < W; j++) {
+                if(s.charAt(j)=='#') {
+                    grid[i][j] = 1;
+                    count++;
+                }
+            }
+        }
+        boolean ans = dfs(0,0);
+        if(ans && count==H+W-1){
+            out.println("Possible");
+        }else{
+            out.println("Impossible");
+        }
     }
-
+    int[][] grid;
+    int H;
+    int W;
+    boolean dfs(int h, int w){
+        if(h==H-1 && w==W-1) return true;
+        boolean res = false;
+        if(h+1<H && grid[h+1][w]==1) res = dfs(h+1, w);
+        if(w+1<W && grid[h][w+1]==1) res = dfs(h, w+1);
+        return res;
+    }
     final int mod = 1000000007;
     final BigInteger MOD = BigInteger.valueOf(mod);
     

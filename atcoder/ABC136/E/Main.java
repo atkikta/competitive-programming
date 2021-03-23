@@ -9,6 +9,31 @@ public class Main {
  
     void solve() throws IOException {
         int N = ni();
+        int K = ni();
+        int[] A = new int[N];
+        long suma = 0;
+        for (int i = 0; i < N; i++) {
+            A[i] = ni();
+            suma += A[i];
+        } 
+        HashSet<Long> facs = new HashSet<>();
+        for (long i = 1; i*i <= suma; i++) {
+            if(suma % i == 0){
+                facs.add(i);
+                facs.add(suma/i);
+            }
+        }
+        long ans = 0;
+        for (Long fac : facs) {
+            long res = 0;
+            for(int i = 0; i<N; i++){
+                if(Math.abs(A[i]) < Math.abs(A[i]-fac)) res += Math.abs(A[i]);
+                else res += Math.abs(A[i] - fac);  
+            }
+            System.out.println(String.format("%d %d", fac, res));
+            if(res <= K) ans = Math.max(ans, fac);
+        }
+        out.println(ans);
     }
 
     final int mod = 1000000007;

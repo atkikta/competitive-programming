@@ -8,7 +8,25 @@ import java.util.*;
 public class Main {
  
     void solve() throws IOException {
-        int N = ni();
+        String s = ns();
+        int N = s.length();
+        s = s.toLowerCase();
+        boolean ans = false;
+        for (int i = 0; i < N; i++) {
+            for (int j = i+1; j < N; j++) {
+                for (int k = j+1; k < N; k++) {
+                    if(s.charAt(i)=='i' && s.charAt(j)=='c' && s.charAt(k)=='t'){
+                        ans = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if(ans){
+            out.println("YES");
+        }else{
+            out.println("NO");
+        }
     }
 
     final int mod = 1000000007;
