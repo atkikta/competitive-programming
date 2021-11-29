@@ -1,0 +1,12 @@
+/home/kita/git/competitive-programming/atcoder/abc182/target/rls/debug/deps/proc_macro2-1426ea250741ca11.rmeta: /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/lib.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/marker.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/parse.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/detection.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/fallback.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/wrapper.rs
+
+/home/kita/git/competitive-programming/atcoder/abc182/target/rls/debug/deps/libproc_macro2-1426ea250741ca11.rlib: /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/lib.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/marker.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/parse.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/detection.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/fallback.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/wrapper.rs
+
+/home/kita/git/competitive-programming/atcoder/abc182/target/rls/debug/deps/proc_macro2-1426ea250741ca11.d: /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/lib.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/marker.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/parse.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/detection.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/fallback.rs /home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/wrapper.rs
+
+/home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/lib.rs:
+/home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/marker.rs:
+/home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/parse.rs:
+/home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/detection.rs:
+/home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/fallback.rs:
+/home/kita/.cargo/registry/src/github.com-1ecc6299db9ec823/proc-macro2-1.0.32/src/wrapper.rs:
