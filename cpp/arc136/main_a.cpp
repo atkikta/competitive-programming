@@ -57,28 +57,45 @@ int main(){
     
     int n;
     cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+    string s;
+    cin >> s;
+    vector<string> list;
+    bool isab = false;
+    for(int i=0; i<s.size(); i++){
+        if(s[i]=='C'){
+            list.push_back("C");
+            isab = false;
+        }else{
+            if(isab){
+                list[list.size()-1].push_back(s[i]);
+            }else{
+                string str = {s[i]};
+                list.push_back(str);
+            }
+            isab = true;
+        }
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
+    // cout << join(list) << endl;
+    for(string str:list){
+        if(str=="C"){
+            cout << "C";
+        }else{
+            int counta = 0;
+            for(int i=0; i<str.size(); i++){
+                if(str[i]=='A') {
+                    counta++;
+                    cout << "A";
                 }
+            }
+            int numb = (str.size() - counta)/2;
+            for(int i=0; i<numb; i++){
+                cout << "A";
+            }
+            if((str.size() - counta)%2==1){
+                cout << "B";
             }
         }
     }
-    cout << ans << endl;
+    
     return 0;
 }

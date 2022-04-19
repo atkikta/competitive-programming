@@ -55,30 +55,35 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+    long long k;
+    cin >> k;
+    vector<long long> div(0);
+    for(long long i=1; i*i<=k; i++){
+        if(k%i==0){
+            if(i*i==k) div.push_back(i);
+            else{
+                div.push_back(i);
+                div.push_back(k/i);
+            }
+        }
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
+    std::sort(div.begin(), div.end());
+    // cout << join(div) << endl;
+    long long count = 0;
+    for(int i=0; i<div.size(); i++){
+        for(int j=i; j<div.size(); j++){
+            for(int l=j; l<div.size(); l++){
+                long long a = div[i];
+                long long b = div[j];
+                long long c = div[l];
+                // cout << a << b << c << endl;
+                if(k < a*b*c)break;
+                if(k == (a*b*c) && a<= b && b<=c){
+                    count++;
                 }
             }
         }
     }
-    cout << ans << endl;
+    cout << count << endl;
     return 0;
 }

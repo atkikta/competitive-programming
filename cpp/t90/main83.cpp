@@ -55,30 +55,60 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+    int n, m;
+    cin >> n >> m;
+    vector<vector<int>> graph(n, vector<int>());
+    for(int i=0; i<m; i++){
+        int a, b;
+        cin >> a >> b;
+        a--;b--;
+        graph[a].push_back(b);
+        graph[b].push_back(a);
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
+    vector<bool> isbig(n, false);
+    vector<vector<int>> nei_big(n,vector<int>());
+    for(int i=0; i<n; i++){
+        if(graph[i].size() > sqrt(2*m)) {
+            isbig[i] =true;
         }
     }
-    cout << ans << endl;
+    for(int i=0; i<n; i++){
+        for(int nei:graph[i]){
+            if(isbig[nei]) nei_big[i].push_back(nei);
+        }
+    }
+    vector<int> last(n, -1);
+    vector<int> last_big(n, -1);
+    int q;
+    cin >> q;
+    vector<pair<int, int>> query(0);
+    for(int i=0; i<q; i++){
+        int x,y;
+        cin >> x >> y;
+        x--;
+        query.push_back(make_pair(x, y));
+    }
+    vector<int> color(n, 1);
+    for(int i=0; i<q; i++){
+        int x = query[i].first;
+        int y = query[i].second;
+        int la = last[x];
+        for(int nb:nei_big[x]){
+            la = max(la, last_big[nb]);
+        }
+        if(la == -1){
+            cout << 1 << endl;
+        }else {
+            cout << query[la].second << endl;
+        }
+        if(isbig[x]){
+            last_big[x] = i;
+        }else{
+            for(int nei: graph[x]){
+                last[nei] = i;
+            }
+        }
+        last[x] = i;
+    }
     return 0;
 }

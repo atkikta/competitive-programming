@@ -55,30 +55,21 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
+    int n, k;
+    cin >> n >> k;
+    vector<int> points;
     for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+        int a, b;
+        cin >> a >> b;
+        points.push_back(b);
+        points.push_back(a-b);
     }
+    std::sort(points.begin(), points.end(), greater<int>());
     long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
-        }
+    for(int i=0; i<k; i++){
+        ans += points[i];
     }
+    // cout << join(points) << endl;
     cout << ans << endl;
     return 0;
 }

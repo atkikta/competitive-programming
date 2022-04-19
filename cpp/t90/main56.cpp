@@ -55,30 +55,41 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
+    int n,s;
+    cin >> n >> s;
+    vector<int> a(n);
+    vector<int> b(n);
     for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+        cin >> a[i] >> b[i];
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
+    vector<vector<bool>> dp(n+1, vector<bool>(s+1, false));
+    dp[0][0] = true;
+    for(int i=0; i<n; i++){
+        for(int j=0; j<=s; j++){
+            if(dp[i][j]) {
+                if(j+a[i] <= s) dp[i+1][j+a[i]] = true;
+                if(j+b[i] <= s) dp[i+1][j+b[i]] = true;
             }
         }
+    } 
+    vector<char> ans(n);
+    if(dp[n][s]==false){
+        cout << "Impossible" << endl;
+    }else{
+        int val = s;
+        for(int i=n; i>=1; i--){
+            if(val-a[i-1]>=0 && dp[i-1][val-a[i-1]]){
+                ans[i-1] = 'A';
+                val -= a[i-1];
+            }else{
+                ans[i-1] = 'B';
+                val -= b[i-1];
+            }
+        }
+        for(int i=0; i<n; i++){
+            cout << ans[i];
+        }
+        cout << endl;
     }
-    cout << ans << endl;
     return 0;
 }

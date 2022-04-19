@@ -55,28 +55,44 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
+    int n, k;
+    long long p;
+    cin >> n >> k >> p;
+    vector<long long> a(n);
     cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
-    }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
+    vector<long long> half_count1[100];
+    vector<long long> half_count2[100];
+    int mid = n/2;
+    for(int i=0; i<(1<<mid); i++){
+        long long popc = 0, valc = 0;
+        for(int j=0; j<mid; j++){
+            if((i & (1 << j)) != 0){
+                popc++;
+                valc += a[j];
             }
+        }
+        half_count1[popc].push_back(valc);
+    }
+    for(int i=0; i<(1<<(n-mid)); i++){
+        long long popc=0, valc=0;
+        for(int j=0; j<n-mid; j++){
+            if((i & (1 << j)) != 0){
+                popc++;
+                valc+=a[mid+j];
+            }
+        }
+        half_count2[popc].push_back(valc);
+    }
+
+    for(int i=0; i<=n; i++){
+        std::sort(half_count1[i].begin(), half_count1[i].end());
+        std::sort(half_count2[i].begin(), half_count2[i].end());
+    }
+    long long ans = 0;
+    for(int h=0; h<=k; h++){
+        for(int i=0; i<half_count1[h].size(); i++){
+            int pos = lower_bound(half_count2[k-h].begin(), half_count2[k-h].end(), p-half_count1[h][i]+1) - half_count2[k-h].begin(); 
+            ans += pos;
         }
     }
     cout << ans << endl;

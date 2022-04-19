@@ -57,28 +57,37 @@ int main(){
     
     int n;
     cin >> n;
-    vector<int> a(n), b(n), c(n);
+    vector<int> a(n);
     cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
+    long long sum = 0;
     for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+        sum += a[i];
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
+    vector<int> a2(2*n);
+    for(int i=0; i<n; i++){
+        a2[i] = a[i];
+    }
+    for(int i=0; i<n; i++){
+        a2[n+i] = a[i];
+    }
+    vector<long long> b(2*n);
+    for(int i=1; i<2*n; i++){
+        b[i] = b[i-1] + a2[i-1];
+    }
+    // cout << join(b) << endl;
+    int ans = false;
+    int r = 0;
+    for(int l=0; l<2*n; l++){
+        while(r<2*n){
+            if((b[r]-b[l])*10 >= sum) break;
+            r++;
+        }
+        //update ans
+        if((b[r]-b[l])*10 == sum){
+            ans = true;
         }
     }
-    cout << ans << endl;
+    if(ans) cout << "Yes" << endl;
+    else cout << "No" << endl;
     return 0;
 }

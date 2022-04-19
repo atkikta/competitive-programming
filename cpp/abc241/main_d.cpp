@@ -55,30 +55,54 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
-    }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
+    int q;
+    cin >> q;
+    multiset<long long> set;
+    for(int i=0; i<q; i++){
+        int t;
+        cin >> t;
+        if(t==1){
+            long long x;
+            cin >> x;
+            set.insert(x);
+        }else if(t==2){
+            
+            long long x;
+            int k;
+            cin >> x >> k;
+            auto pos = set.upper_bound(x);
+            int count = 0;
+            bool isok = true;
+            while(pos!=set.begin()){
+                pos--;
+                count++;
+                if(count == k){
+                    cout << *pos << endl;
+                    isok = false;
+                    break;
+                } 
             }
+            if(isok) cout << -1 << endl;
+        }else{
+            long long x;
+            int k;
+            cin >> x >> k;
+            auto pos = set.lower_bound(x);
+            // cout << "pos:" << *pos<< flush;
+            int count = 0;
+            bool isok = true;
+            while(pos!=set.end()){
+                if(count == k-1){
+                    cout << *pos << endl;
+                    isok = false;
+                    break;
+                } 
+                pos++;
+                count++;
+            }
+            if(isok) cout << -1 << endl;
         }
     }
-    cout << ans << endl;
+    
     return 0;
 }

@@ -57,28 +57,55 @@ int main(){
     
     int n;
     cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
+    vector<vector<int>> grid(n, vector<int>(n, 0));
     for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+        string s;
+        cin >> s;
+        for(int j=0; j<n; j++){
+            if(s[j]=='#') grid[i][j] = 1;
+        }
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
+    for(int left=0; left<n-5; left++){
+        for(int upper=0; upper<n-5; upper++){
+            // cout << left << "," << upper << endl;
+            vector<vector<int>> sg(6, vector<int>(6, 0));
+            for(int i=0; i<6; i++){
+                for(int j=0; j<6; j++){
+                    sg[i][j] = grid[left+i][upper+j];
                 }
+            }
+            bool isok = false;
+            for(int i=0; i<6; i++){
+                int rc = 0;
+                for(int j=0; j<6; j++){
+                    if(sg[i][j]==1)rc++;
+                }
+                if(rc>=4) isok=true;
+            }
+            for(int j=0; j<6; j++){
+                int cc = 0;
+                for(int i=0; i<6; i++){
+                    if(sg[i][j]==1) cc++;
+                }
+                if(cc>=4) isok=true;
+            }
+            int ac = 0;
+            for(int i=0; i<6; i++){
+                if(sg[5-i][i]==1) ac++;
+            }
+            if(ac>=4) isok=true;
+            int dc = 0;
+            for(int i=0; i<6; i++){
+                if(sg[i][i]==1) dc++;
+            }
+            if(dc>=4) isok=true;
+
+            if(isok){
+                cout<<"Yes"<<endl;
+                return 0;
             }
         }
     }
-    cout << ans << endl;
+    cout << "No" << endl;
     return 0;
 }

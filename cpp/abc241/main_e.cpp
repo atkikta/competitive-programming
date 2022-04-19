@@ -56,29 +56,27 @@ int main(){
     using namespace std;
     
     int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+    long long k;
+    cin >> n >> k;
+    vector<int> a(n);
+    const int mod = n;
+    vector<int> step(mod, -1);
+    int pos = 0;
+    int count = 0;
+    while(step[pos] == -1){
+        step[pos] = count;
+        pos = (pos+ a[pos])%mod;
+        count += a[pos];
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
-        }
+    int cycle = count - step[pos];
+    if(k >= step[pos]){
+        k = step[pos] + (k-step[pos])%cycle;
     }
-    cout << ans << endl;
+    int ans = -1;
+    for(int i=0; i<mod; i++){
+        if(step[i] == k) ans = i;
+    }
+    cout << ans <<endl;
+    
     return 0;
 }

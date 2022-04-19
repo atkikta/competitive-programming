@@ -51,34 +51,77 @@ template<typename T> std::string join(std::set<T>& set_var, std::string sep = ",
 const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
-
+using namespace std;
+class union_find {
+private:
+	int N;
+	vector<int> par;
+public:
+	union_find() : N(0), par() {}
+	union_find(int N_) : N(N_) {
+		par.resize(N);
+		for (int i = 0; i < N; ++i) {
+			par[i] = i;
+		}
+	}
+	int root(int x) {
+		if (x == par[x]) return x;
+		return par[x] = root(par[x]);
+	}
+	void link(int x, int y) {
+		par[root(x)] = root(y);
+	}
+	bool connected(int x, int y) {
+		return root(x) == root(y);
+	}
+};
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
-    }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
+    int n, q;
+    cin >> n >> q;
+    union_find uf(n);
+    vector<vector<long long>> query(q, vector<long long>(4, 0));
+    vector<long long> sum_next(n-1);
+    vector<bool> is_feasible(q, false);
+    for(int i=0; i<q; i++){
+        int t, x, y;
+        long long v;
+        cin >> t >> x >> y >> v;
+        x--;
+        y--;
+        if(t==0){
+            query[i] = {0,x,y,v};
+            uf.link(x,y);
+            sum_next[x] = v;
+        }else{
+            query[i] = {1,x,y,v};
+            if(uf.connected(x,y)){
+                is_feasible[i] = true;
             }
         }
     }
-    cout << ans << endl;
+    vector<long long> case0(n, 0);
+    vector<long long> case1(n, 1);
+    for(int i=0; i<n-1; i++){
+        case0[i+1] = sum_next[i] - case0[i];
+    }
+    for(int i=0; i<q; i++){
+        if(query[i][0]==1){
+            int x = query[i][1];
+            int y = query[i][2];
+            long long v = query[i][3];
+            if(is_feasible[i]){
+                if((x+y)%2==0){
+                    cout << v + (case0[y] - case0[x]) << endl;
+                }else{
+                    cout << -v + (case0[x] + case0[y]) << endl;
+                }
+            }else{
+                cout << "Ambiguous" << endl;
+            }
+        }
+    }
+    
     return 0;
 }

@@ -57,28 +57,36 @@ int main(){
     
     int n;
     cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
+    string s;
+    cin >> s;
+    vector<int> loco(0);
+    vector<int> locx(0);
     for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+        if(s[i]=='o') loco.push_back(i);
+        if(s[i]=='x') locx.push_back(i);
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
+    long long ans =0;
+    for(int i=0; i<n; i++){
+        // cout <<"i " <<i << endl;
+        if(s[i]=='o'){
+            int ri = lower_bound(locx.begin(), locx.end(),i) - locx.begin();
+            // cout << ri << endl;
+            if(ri<locx.size()){
+                int right = locx[ri];
+                // cout << right << endl;
+                ans += n-right;
+            }
+        }else{
+            int ri = lower_bound(loco.begin(), loco.end(), i) - loco.begin();
+            // cout << ri << endl;
+            if(ri < loco.size()){
+                int right = loco[ri];
+                // cout << right << endl;
+                ans += n-right;
             }
         }
     }
     cout << ans << endl;
+
     return 0;
 }

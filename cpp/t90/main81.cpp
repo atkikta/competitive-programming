@@ -55,28 +55,32 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
+    int n, k;
+    cin >> n >> k;
+    vector<int> a(n);
+    vector<int> b(n);
     for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+        cin >> a[i] >> b[i];
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
+    vector<vector<int>> d(5001, vector<int>(5001));
+    for(int i=0; i<n; i++){
+        d[a[i]][b[i]] ++;
+    }
+    for(int i=1; i<5001; i++){
+        for(int j=1; j<5001; j++){
+            d[i][j] += d[i-1][j];
+        }
+    }
+    for(int i=1; i<5001; i++){
+        for(int j=1; j<5001; j++){
+            d[i][j] += d[i][j-1];
+        }
+    }
+
+    int ans = 0;
+    for(int i=0; i<=5000-k-1; i++){
+        for(int j=0; j<=5000-k-1; j++){
+            ans = max(ans, d[i][j]+d[i+k+1][j+k+1]-d[i][j+k+1]-d[i+k+1][j]);
         }
     }
     cout << ans << endl;

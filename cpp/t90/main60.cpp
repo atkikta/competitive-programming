@@ -52,32 +52,46 @@ const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
 
+int lis(const std::vector<int>& a){
+    int n = a.size();
+    std::vector<int> dp(n, INF);
+    for(int i=0; i<n; i++){
+        int pos = std::lower_bound(dp.begin(), dp.end(), a[i]) - dp.begin();
+        dp[pos] = a[i];
+    }
+    return std::lower_bound(dp.begin(), dp.end(), INF) - dp.begin();
+}
+
 int main(){
     using namespace std;
     
     int n;
     cin >> n;
-    vector<int> a(n), b(n), c(n);
+    vector<int> a(n);
     cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
+    cout << lis(a) << endl;
+    vector<int> left(n);
+    vector<int> right(n);
+    vector<int> dp(n, INF);
     for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+        int pos = lower_bound(dp.begin(), dp.end(), a[i])- dp.begin();
+        dp[pos] = a[i];
+        left[i] = pos+1;
+        // cout << join(dp) << endl;
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
-        }
+    for(int i=0; i<n; i++){
+        dp[i] = INF;
+    }
+    for(int i=n-1; i>=0; i--){
+        int pos = lower_bound(dp.begin(), dp.end(), a[i]) - dp.begin();
+        dp[pos] = a[i];
+        right[i] = pos+1;
+    }
+    // cout << join(left) << endl;
+    // cout << join(right) << endl;
+    int ans = 0;
+    for(int i=0; i<n; i++){
+        ans = max(ans, left[i]+right[i]-1);
     }
     cout << ans << endl;
     return 0;

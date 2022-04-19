@@ -55,30 +55,45 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
-    }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
+    int h, w;
+    cin >> h >> w;
+    vector<vector<int>> a(h, vector<int>(w));
+    vector<vector<int>> b(h, vector<int>(w));
+    for(int i=0; i<h; i++){
+        for(int j=0; j<w; j++){
+            cin >> a[i][j];
         }
     }
-    cout << ans << endl;
+    for(int i=0; i<h; i++){
+        for(int j=0; j<w; j++){
+            cin >> b[i][j];
+        }
+    }
+    long long count = 0;
+    for(int i=0; i<h-1; i++){
+        for(int j=0; j<w-1; j++){
+            int diff = b[i][j] - a[i][j];
+            a[i][j] += diff;
+            a[i+1][j] += diff;
+            a[i][j+1] += diff;
+            a[i+1][j+1] += diff;
+            count += abs(diff);
+        }
+    }
+    bool ans = true;
+    for(int i=0; i<h; i++){
+        if(a[i][w-1]!=b[i][w-1]) ans = false;
+    }
+    for(int i=0; i<w; i++){
+        if(a[h-1][i]!=b[h-1][i]) ans = false;
+    }
+    if(a[h-1][w-1] != b[h-1][w-1]) ans = false;
+    if(ans){
+        cout << "Yes" << endl;
+        cout << count << endl;
+    }else{
+        cout << "No" << endl;
+    }
+    
     return 0;
 }

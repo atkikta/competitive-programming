@@ -50,35 +50,49 @@ template<typename T> std::string join(std::set<T>& set_var, std::string sep = ",
 //constant
 const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
-const long long LINF = LONG_LONG_MAX/2;
+const long long LINF = LONG_LONG_MAX;
 
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
+    int n, k;
+    cin >> n >> k;
+    vector<int> x, y;
     for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+        int xi, yi;
+        cin >> xi >> yi;
+        x.push_back(xi);
+        y.push_back(yi);
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
+    vector<long long> internal(1<<n);
+    vector<vector<long long>> dist(n, vector<long long>(n, 0));
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            dist[i][j] = (x[i]-x[j])*1LL*(x[i]-x[j]) + (y[i]-y[j])*1LL*(y[i]-y[j]);
         }
     }
-    cout << ans << endl;
+    for(int i=1; i< 1<<n; i++){
+        long long res = 0;
+        for(int j=0; j<n; j++){
+            for(int k=0; k<n; k++){
+                if(((i>>j) & 1)==1 && ((i>>k) & 1)==1){
+                    res = max(res, dist[j][k]);
+                }
+                
+            }
+        }
+        internal[i] = res;
+    }
+    // cout << join(internal) << endl;
+    vector<vector<long long>> dp(k+1, vector<long long>(1<<n, LINF));
+    dp[0][0] = 0;
+    for(int ngroup=1; ngroup<=k; ngroup++){
+        for(int i=1; i< 1<<n; i++){
+            for(int j=i; j!=0; j= (j-1)&i){
+                dp[ngroup][i] = min(dp[ngroup][i], max(dp[ngroup-1][i-j], internal[j]));
+            }
+        }        
+    }
+    cout << dp[k][(1<<n)-1] << endl;
     return 0;
 }

@@ -55,29 +55,38 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+    int h,w;
+    cin >> h >> w;
+    vector<vector<int>> grid(h, vector<int>(w, 0));
+    for(int i=0; i<h; i++){
+        for(int j=0; j<w; j++){
+            cin >> grid[i][j];
+        }
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
+    int ans = 0;
+    for(int i=0; i<(1<<h); i++){
+        int nrow = 0;
+        for(int j=0; j<h; j++){
+            if(((i>>j)&1)==1) nrow++;
+        }
+        map<int, int> list;
+        for(int x=0; x<w; x++){
+            set<int> cat;
+            for(int j=0; j<h; j++){
+                if(((i>>j)&1) == 1){
+                    cat.insert(grid[j][x]);
                 }
             }
+            if(cat.size()==1){
+                list[*cat.begin()]++;
+            }
         }
+        int res = 0;
+        for(auto it = list.begin(); it!=list.end(); it++){
+            pair<int, int> kv = *it;
+            res = max(res, kv.second);
+        }
+        ans = max(ans, nrow*res);
     }
     cout << ans << endl;
     return 0;

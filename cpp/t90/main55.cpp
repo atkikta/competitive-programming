@@ -55,26 +55,18 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
+    int n, p, q;
+    cin >> n >> p >> q;
+    vector<int> a(n);
     cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
-    }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
+    long long ans = 0;
+    for(int i1=0; i1<n; i1++){
+        for(int i2=i1+1; i2<n; i2++){
+            for(int i3=i2+1; i3<n; i3++){
+                for(int i4=i3+1; i4<n; i4++){
+                    for(int i5=i4+1; i5<n; i5++){
+                        if(1LL*a[i1]*a[i2]%p *a[i3] %p * a[i4] %p * a[i5] %p == q) ans++;
+                    }
                 }
             }
         }

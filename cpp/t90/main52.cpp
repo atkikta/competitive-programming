@@ -57,28 +57,19 @@ int main(){
     
     int n;
     cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
-    }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
+    vector<vector<long long>> a(n+1, vector<long long>(7));
+    for(int i=1; i<=n; i++){
+        for(int j=1; j<=6; j++){
+            cin >> a[i][j];
         }
     }
+    long long ans = 1;
+    for(int i=1; i<=n; i++){
+        ans *= (a[i][1]+a[i][2]+a[i][3]+a[i][4]+a[i][5]+a[i][6]);
+        ans %= MOD;
+    }
+    
     cout << ans << endl;
+
     return 0;
 }

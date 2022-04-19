@@ -57,28 +57,24 @@ int main(){
     
     int n;
     cin >> n;
-    vector<int> a(n), b(n), c(n);
+    vector<int> a(n);
     cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
+    vector<int> cut;
+    cut.push_back(0);
     for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
-    }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
+        for(int j=0; j<cut.size(); j++){
+            cut[j] = (cut[j] + a[i]) %360;
         }
+        cut.push_back(0);
+        // cout << join(cut) << endl;
     }
+    std::sort(cut.begin(), cut.end());
+    int ans = 0;
+    for(int i=0; i<cut.size()-1; i++){
+        ans = max(ans, cut[i+1] - cut[i]);
+    }
+    ans = max(360-cut[cut.size()-1], ans );
     cout << ans << endl;
+    
     return 0;
 }

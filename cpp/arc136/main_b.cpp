@@ -57,28 +57,49 @@ int main(){
     
     int n;
     cin >> n;
-    vector<int> a(n), b(n), c(n);
+    vector<int> a(n);
+    vector<int> b(n);
     cin >> a;
     cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
-    }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
+
+    for(int i=n-1; i>=3; i--){
+        int tarb = b[i];
+        // cout << "tarb:" << tarb << endl;
+        int pos = -1;
+        for(int j=0; j<=i; j++){
+            if(a[j] == tarb) pos = j;
+        }
+        if(pos == -1) {
+            cout << "No" << endl;
+            return 0;
+        }else if(pos == i){
+            continue;
+        }else if(pos+1 == i){
+            int x = a[pos-1];
+            int y = a[pos];
+            int z = a[pos+1];
+            a[pos-1] = z;
+            a[pos] = x;
+            a[pos+1] = y; 
+        }else{
+            while(a[i] != tarb){
+                int x = a[pos];
+                int y = a[pos+1];
+                int z = a[pos+2];
+                a[pos] = z;
+                a[pos+1] = x;
+                a[pos+2] = y; 
+                if(pos<i-2)pos++;
+                // cout << join(a) << endl;
             }
         }
     }
-    cout << ans << endl;
+    if(
+        (a[0] == b[0] && a[1] == b[1] && a[2] == b[2])||
+        (a[0] == b[1] && a[1] == b[2] && a[2] == b[0])||
+        (a[0] == b[2] && a[1] == b[0] && a[2] == b[1])
+    ) cout << "Yes" << endl;
+    else cout << "No" << endl;
+
     return 0;
 }

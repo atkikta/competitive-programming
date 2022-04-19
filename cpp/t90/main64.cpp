@@ -55,30 +55,33 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
+    int n, q;
+    cin >> n >> q;
+    vector<long long> a(n);
     cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+    vector<long long> diff(n-1);
+    for(int i=0; i<n-1; i++){
+        diff[i] = a[i+1] - a[i];
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
+    long long unco = 0;
+    for(int i=0; i<n-1; i++){
+        unco += abs(diff[i]);
+    }
+    for(int i=0; i<q; i++){
+        int l, r, v;
+        cin >> l >> r >> v;
+        l--;r--;
+        if(l!=0){
+            unco = unco - (abs(diff[l-1])) + (abs(diff[l-1]+v));
+            diff[l-1] += v;
         }
+        if(r!=n-1){
+            unco = unco - (abs(diff[r])) + (abs(diff[r]-v));
+            diff[r] -= v;
+        }
+        // cout << join(diff) << endl;
+        cout << unco << endl;
     }
-    cout << ans << endl;
+    
     return 0;
 }

@@ -52,33 +52,47 @@ const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
 
+int digit_sum(int x) {
+	int ans = 0;
+	while (x > 0) {
+		ans += x % 10;
+		x /= 10;
+	}
+	return ans;
+}
+std::vector<int> digit_list(int x){
+    std::vector<int> ans;
+    while(x>0){
+        ans.push_back(x%10);
+        x /= 10;
+    }
+    std::reverse(ans.begin(), ans.end());
+    return ans;
+}
+
 int main(){
     using namespace std;
     
     int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
+    long long k;
+    cin >> n >> k;
+    const int mod = 100000;
+    vector<int> step(mod, -1);
+    int pos = n;
+    int count = 0;
+    while(step[pos] == -1){
+        step[pos] = count;
+        pos = (digit_sum(pos)+pos)%mod;
+        count++;
     }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
-        }
+    int cycle = count - step[pos];
+    if(k >= step[pos]){
+        k = step[pos] + (k-step[pos])%cycle;
     }
-    cout << ans << endl;
+    int ans = -1;
+    for(int i=0; i<mod; i++){
+        if(step[i] == k) ans = i;
+    }
+    cout << ans <<endl;
     return 0;
 }

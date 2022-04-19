@@ -52,33 +52,52 @@ const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
 
-int main(){
-    using namespace std;
-    
-    int n;
-    cin >> n;
-    vector<int> a(n), b(n), c(n);
-    cin >> a;
-    cin >> b;
-    cin >> c;
-    vector<int> counta(46, 0);
-    vector<int> countb(46, 0);
-    vector<int> countc(46, 0);
-    for(int i=0; i<n; i++){
-        counta[a[i]%46] ++;
-        countb[b[i]%46] ++;
-        countc[c[i]%46] ++;
-    }
-    long long ans=0;
-    for(int i=0; i<46; i++){
-        for(int j=0; j<46; j++){
-            for(int k=0; k<46; k++){
-                if((i+j+k)%46==0){
-                    ans += counta[i] *1LL* countb[j] *1LL* countc[k];
-                }
-            }
+using namespace std;
+vector<vector<int>> grid;
+int h,w;
+vector<int> dx = {1, 0, -1, 0};
+vector<int> dy = {0, 1, 0, -1};
+int step(int i, int j, int len, int si, int sj){
+    // cout << i << ", " << j << ", "  << len<< endl;    
+    // for(int i=0; i<h; i++){
+    //     cout << join(grid[i]) << endl;
+    // }
+    if(len!=0&&i==si&&j==sj) return len;
+    if(grid[i][j]==1) return -1;
+    grid[i][j] = 1;
+    int ret = 0;
+    for(int d=0; d<4; d++){
+        int ni = i+dx[d];
+        int nj = j+dy[d];  
+        if(ni>=0&&ni<h&&nj>=0&&nj<w){
+            ret = max(ret, step(ni, nj, len+1, si, sj));
         }
     }
-    cout << ans << endl;
+    grid[i][j] = 0;
+    return ret;
+}
+int main(){
+    
+    cin >> h >> w;
+    for(int i=0; i<h; i++){
+        grid.push_back(vector<int>(w, 0));        
+    }
+    for(int i=0; i<h; i++){
+        string s;
+        cin >> s;
+        for(int j=0; j<w; j++){
+            if(s[j]=='#') grid[i][j] = 1;
+        }
+    }
+
+    int ans = 0;
+    for(int i=0; i<h; i++){
+        for(int j=0; j<w; j++){
+            if(grid[i][j]==1) continue;
+            ans = max(ans, step(i, j, 0, i, j));
+        }
+    }
+    if(ans < 3) cout << -1 << endl;
+    else cout << ans << endl;
     return 0;
 }
