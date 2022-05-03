@@ -1,0 +1,153 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.math.BigInteger;
+import java.util.*;
+ 
+public class Main {
+ 
+    void solve() throws IOException {
+        int N = ni();
+        ModComb mc = new ModComb(2*N, mod);
+
+        long ans = mc.comb(2*N, N) * modinv(2,mod);
+        out.println(ans%mod);
+    }
+
+    final int mod = 998244353;
+    final BigInteger MOD = BigInteger.valueOf(mod);
+    class ModComb{
+        int mod;
+        int N;
+        int[] nfac;
+        int[] nfacinv;
+        ModComb(int n, int mod){
+            this.mod = mod;
+            final BigInteger MOD = BigInteger.valueOf(mod);
+            this.N=n;
+            this.nfac = new int[n+1];
+            this.nfacinv = new int[n+1];
+            nfac[0] = 1;
+            for (int i = 1; i < n+1; i++) {
+                nfac[i] = (int)((nfac[i-1] * 1L * i)%mod);
+            }
+            int inv = BigInteger.valueOf((long)nfac[n]).modInverse(MOD).intValue();
+            this.nfacinv[n] = inv;
+            for (int i = n; i > 0; i--) {
+                nfacinv[i-1] = (int)((nfacinv[i] * 1L * i)%mod);
+            }
+        }
+        int comb(int n, int r){
+            int ret = (int)((nfac[n] * 1L * nfacinv[r]) % mod);
+            ret = (int)((ret * 1L * nfacinv[n-r]) % mod);
+            return ret;
+        }
+    }
+    long gcd(long num1,long num2) {
+        if(num2 == 0) return num1;
+        else return gcd(num2 , num1 % num2 );
+    }
+    long lcm(long a, long b){
+        return (a / gcd(a, b)) * b;
+    }
+    long modinv(long a, int m) {
+		long b = m;
+		long u = 1;
+		long v = 0;
+		long tmp = 0;
+ 
+		while (b > 0) {
+			long t = a / b;
+			a -= t * b;
+			tmp = a;
+			a = b;
+			b = tmp;
+ 
+			u -= t * v;
+			tmp = u;
+			u = v;
+			v = tmp;
+		}
+ 
+		u %= m;
+		if (u < 0) u += m;
+		return u;
+	}
+    int mul(int x, int y){
+        int val = (int)((x * 1L * y) % mod);
+        return val>=0 ? val : val+mod;
+    }
+    int add(int x, int y) {
+        x += y;
+        if(x < 0) x += mod;
+        if(x>=mod) x -= mod;
+        return x;
+    }
+    int sub(int x, int y){
+        x = add(x,mod-y);
+        if(x < 0) x += mod;
+        if(x>=mod) x -= mod;
+        return x;
+    }
+    String ns() throws IOException {
+        while (!tok.hasMoreTokens()) {
+            tok = new StringTokenizer(in.readLine(), " ");
+        }
+        return tok.nextToken();
+    }
+ 
+    int ni() throws IOException {
+        return Integer.parseInt(ns());
+    }
+ 
+    long nl() throws IOException {
+        return Long.parseLong(ns());
+    }
+ 
+    double nd() throws IOException {
+        return Double.parseDouble(ns());
+    }
+ 
+    String[] nsa(int n) throws IOException {
+        String[] res = new String[n];
+        for (int i = 0; i < n; i++) {
+            res[i] = ns();
+        }
+        return res;
+    }
+ 
+    int[] nia(int n) throws IOException {
+        int[] res = new int[n];
+        for (int i = 0; i < n; i++) {
+            res[i] = ni();
+        }
+        return res;
+    }
+ 
+    long[] nla(int n) throws IOException {
+        long[] res = new long[n];
+        for (int i = 0; i < n; i++) {
+            res[i] = nl();
+        }
+        return res;
+    }
+    void print2DArray(int[][] a){
+        for (int i = 0; i < a.length; i++) {
+            System.out.println(Arrays.toString(a[i]));
+        }
+    }
+ 
+    static BufferedReader in;
+    static PrintWriter out;
+    static StringTokenizer tok;
+ 
+    public static void main(String[] args) throws IOException {
+        in = new BufferedReader(new InputStreamReader(System.in));
+        out = new PrintWriter(System.out);
+        tok = new StringTokenizer("");
+        Main main = new Main();
+        main.solve();
+        out.close();
+    }
+}
