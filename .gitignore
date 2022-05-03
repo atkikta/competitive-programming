@@ -24,7 +24,10 @@ hs_err_pid*
 
 
 # vscode
-.vscode/
+.vscode/settings.json
 
 # c++
 a.out
+
+# rust 
+target/

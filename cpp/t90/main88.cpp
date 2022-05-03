@@ -57,19 +57,31 @@ vector<int> a, x, y;
 int n,q;
 
 map<int, vector<int>> cards_map;
-vector<bool> pattern;
-int dfs(){
-    if(pattern.size()==n){
-        int count = 0;
-        vector<int> cards(0);
-        for(int i=0; i<n; i++){
-            if(pattern[i]){
-                count += a[i];
-                cards.push_back(a[i]);
-            }
+vector<int> pattern;
+vector<int> ans1;
+vector<int> ans2;
+vector<int> c;
+vector<vector<int>>g;
+bool flag = false;
+void dfs(int pos, int total){
+    if(flag == true) return;
+    if(pos == n){
+        if(cards_map.find(total)!=cards_map.end()){
+            flag = true;
+            ans1 = cards_map[total];
+            ans2 = pattern;
+        }else{
+            cards_map[total] = pattern;
         }
-        if(cards_map.find(count)==cards_map.end()){
-            
+        return;
+    }else{
+        dfs(pos+1, total);
+        if(c[pos]==0){
+            pattern.push_back(pos);
+            for(int i:g[pos]) c[i]++;
+            dfs(pos+1, total+a[pos]);
+            for(int i:g[pos]) c[i]--;
+            pattern.pop_back();
         }
     }
 }
@@ -80,10 +92,32 @@ int main(){
     cin >> a;
     x = vector<int>(q);
     y = vector<int>(q);
+    c = vector<int>(n, 0);
+    g = vector<vector<int>>(n);
     for(int i=0; i<q; i++){
         cin>>x[i] >> y[i];
+        x[i]--;y[i]--;
+        g[x[i]].push_back(y[i]);
     }
-
+    dfs(0, 0);
+    cout << ans1.size() << endl;
+    for(int i=0; i<ans1.size(); i++){
+        cout << ans1[i]+1;
+        if(i==ans1.size()-1){
+            cout << endl;
+        }else{
+            cout << " ";
+        }
+    }
+    cout << ans2.size() << endl;
+    for(int i=0; i<ans2.size(); i++){
+        cout << ans2[i]+1;
+        if(i==ans2.size()-1){
+            cout << endl;
+        }else{
+            cout << " ";
+        }
+    }
 
     
     return 0;
