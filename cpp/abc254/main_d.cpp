@@ -52,36 +52,78 @@ const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
 
+using namespace std;
+using ll = long long;
+using P = pair<int,int>;
+struct Sieve {
+  int n;
+  vector<int> f, primes;
+  Sieve(int n=1):n(n), f(n+1) {
+    f[0] = f[1] = -1;
+    for (ll i = 2; i <= n; ++i) {
+      if (f[i]) continue;
+      primes.push_back(i);
+      f[i] = i;
+      for (ll j = i*i; j <= n; j += i) {
+        if (!f[j]) f[j] = i;
+      }
+    }
+  }
+  bool isPrime(int x) { return f[x] == x;}
+  vector<int> factorList(int x) {
+    vector<int> res;
+    while (x != 1) {
+      res.push_back(f[x]);
+      x /= f[x];
+    }
+    return res;
+  }
+  vector<P> factor(int x) {
+    vector<int> fl = factorList(x);
+    if (fl.size() == 0) return {};
+    vector<P> res(1, P(fl[0], 0));
+    for (int p : fl) {
+      if (res.back().first == p) {
+        res.back().second++;
+      } else {
+        res.emplace_back(p, 1);
+      }
+    }
+    return res;
+  }
+  vector<pair<ll,int>> factor(ll x) {
+    vector<pair<ll,int>> res;
+    for (int p : primes) {
+      int y = 0;
+      while (x%p == 0) x /= p, ++y;
+      if (y != 0) res.emplace_back(p,y);
+    }
+    if (x != 1) res.emplace_back(x,1);
+    return res;
+  }
+};
 int main(){
-    using namespace std;
+
     
     int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    cin >> n;
+    vector<int> sqs(0);
+    for(int i=1; i*i<=n; i++){
+        sqs.push_back(i*i);
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    Sieve sieve(n+1);
+    long long ans = 0;
+    for(int i=1; i<=n; i++){
+        vector<P> facs = sieve.factor(i);
+        int base = 1;
+        for(auto pa: facs){
+            if(pa.second%2==1) base *= pa.first;
+        }
+        for(int sq: sqs){
+            if(base * sq <= n) ans++;
+            else break;
+        }
     }
-    cout << count << endl;
+    cout << ans << endl;
     return 0;
 }

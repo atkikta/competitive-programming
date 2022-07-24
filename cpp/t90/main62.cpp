@@ -56,32 +56,36 @@ int main(){
     using namespace std;
     
     int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    cin >> n;
+    vector<vector<int>> g(n);
+    queue<int> que;
+    for(int i=0; i<n; i++){
+        int a, b;
+        cin >> a >> b;
+        a--; b--;
+        g[a].push_back(i);
+        g[b].push_back(i);
+        if(a==i || b==i){
+            que.push(i);
+        }
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    vector<bool> visited(n, false);
+    vector<int> route(0);
+    while(!que.empty()){
+        int node = que.front();que.pop();
+        if(visited[node]) continue;
+        route.push_back(node);
+        visited[node] = true;
+        for(int next:g[node]){
+            que.push(next);
+        }
     }
-    cout << count << endl;
+    if(route.size()<n){
+        cout << -1 << endl;
+        return 0;
+    }
+    for(int i=n-1; i>=0; i--){
+        cout << route[i]+1 << endl;
+    }
     return 0;
 }

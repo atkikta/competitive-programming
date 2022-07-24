@@ -51,37 +51,50 @@ template<typename T> std::string join(std::set<T>& set_var, std::string sep = ",
 const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
+using namespace std;
+
+int n, k;
+vector<int> used_at;
+bool found = false;
+void dfs(int pos, int val){
+    if(used_at[val] != -1){
+        return;
+    }
+    if(abs((pos+1)-val)<k){
+        return;
+    }
+    if(found) return;
+    used_at[val] = pos;
+    if(pos==n-1){
+        // cout<< "found" << endl;
+        found = true;
+        vector<int> ans(n, -1);
+        for(int i=1; i<=n; i++){
+            ans[used_at[i]] = i;
+        }
+        for(int i=0; i<n; i++){
+            cout << ans[i];
+            if(i==n-1) cout << endl;
+            else cout << " ";
+        }
+        return;
+    }
+    for(int i=1; i<=n; i++){
+        dfs(pos+1, i);
+    }
+    used_at[val] = -1;
+}
 
 int main(){
-    using namespace std;
-    
-    int n;
-    long long k;
     cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    if(n/2 < k){
+        cout << -1 << endl;
+        return 0;
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    used_at = vector<int>(n+1, -1);
+    for(int i=1; i<=n; i++){
+        dfs(0,i);
     }
-    cout << count << endl;
+    
     return 0;
 }

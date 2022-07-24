@@ -8,7 +8,7 @@ template<typename T> std::istream& operator >> (std::istream& is, std::vector<T>
 template<typename T> std::string join(std::vector<T>& vec, std::string sep = ","){
     std::stringstream ss;
     ss << "{";
-    for(long long i=0; i<vec.size(); i++){
+    for(int i=0; i<vec.size(); i++){
         ss << vec[i] << ( i+1 == vec.size() ? "}" : sep );
     }
     return ss.str();
@@ -55,33 +55,37 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
+    int n, q;
+    cin >> n >> q;
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    vector<long long> X(0);
+    vector<long long> Y(0);
+    long long max_x = -LINF;
+    long long min_x = LINF;
+    long long max_y = -LINF;
+    long long min_y = LINF;
+    for(int i=0; i<n; i++){
+        long long x, y;
+        cin >> x >> y;
+        X.push_back(x+y);
+        Y.push_back(x-y);
+        max_x = max(max_x, x+y);
+        min_x = min(min_x, x+y);
+        max_y = max(max_y, x-y);
+        min_y = min(min_y, x-y);
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    
+    for(int i=0; i<q; i++){
+        int q;
+        cin >> q;
+        q--;
+        long long a1 = abs(max_x - X[q]);
+        long long a2 = abs(min_x - X[q]);
+        long long a3 = abs(max_y - Y[q]);
+        long long a4 = abs(min_y - Y[q]);
+        long long ans = max({a1, a2, a3, a4});
+        cout << ans << endl;
     }
-    cout << count << endl;
+
     return 0;
 }

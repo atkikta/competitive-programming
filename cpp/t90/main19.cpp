@@ -51,21 +51,35 @@ template<typename T> std::string join(std::set<T>& set_var, std::string sep = ",
 const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
-
+using namespace std;
+vector<int> a;
+vector<vector<long long>> memo;
 long long dp(int lh, int rh){
-    if(rh - lh <=2){
-        return abs(a[lh] - a[rh-1]);
+    if(memo[lh][rh]!=-1){
+        return memo[lh][rh];
     }
-    for
+    if(rh - lh <=2){
+        return memo[lh][rh] = abs(a[lh] - a[rh-1]);
+    }
+    long long res = LINF;
+    res = min(res, abs(a[lh] - a[rh-1]) + dp(lh+1, rh-1));
+    for (int  i = lh+2; i <=rh-2; i+=2){
+        res = min(res, dp(lh, i)+dp(i, rh));
+    }
+    return memo[lh][rh] = res;
 }
-std::vector<int> a;
 int main(){
-    using namespace std;
-    
     int n;
+    cin >> n;
+    for (int i = 0; i <= 2*n; i++){
+        memo.push_back(vector<long long>(2*n+1, -1));
+    }
+    
     a = vector<int>(2*n);
     cin >> a;
     long long ans = dp(0, 2*n);
+
+    cout << ans << endl;
     
     return 0;
 }

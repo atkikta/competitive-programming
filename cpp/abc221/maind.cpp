@@ -56,32 +56,28 @@ int main(){
     using namespace std;
     
     int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    cin >> n;
+    vector<pair<int, int>> x;
+    for(int i=0; i<n; i++){
+        int a, b;
+        cin >> a >> b;
+        x.push_back({a, 1});
+        x.push_back({a+b, -1});
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    std::sort(x.begin(), x.end());
+    
+    vector<int> ans(n+1);
+    int count = 0;
+    int prev = 0;
+    for(auto p: x){
+        ans[count] += p.first - prev;
+        count += p.second;
+        prev = p.first;
     }
-    cout << count << endl;
+    for(int i=1; i<=n; i++){
+        cout << ans[i] << " ";
+    }
+    cout << endl;
+    
     return 0;
 }

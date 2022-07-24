@@ -51,37 +51,53 @@ template<typename T> std::string join(std::set<T>& set_var, std::string sep = ",
 const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
-
+struct UnionFind {
+  std::vector<int> d;
+  UnionFind(int n=0): d(n,-1) {}
+  int find(int x) {
+    if (d[x] < 0) return x;
+    return d[x] = find(d[x]);
+  }
+  bool unite(int x, int y) {
+    x = find(x); y = find(y);
+    if (x == y) return false;
+    if (d[x] > d[y]) std::swap(x,y);
+    d[x] += d[y];
+    d[y] = x;
+    return true;
+  }
+  bool same(int x, int y) { return find(x) == find(y);}
+  int size(int x) { return -d[find(x)];}
+};
 int main(){
     using namespace std;
     
     int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
+    cin >>n;
+    vector<int> x(n);
+    vector<int> c(n);
+    cin >> x;
+    cin >> c;
+    for(int i=0; i<n; i++){
+        x[i]--;
+    }
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    UnionFind uf(n);
+    long long ans = 0;
+    for(int i=0; i<n; i++){
+        if(uf.same(i, x[i])){
+            int curr = i;
+            int minc = INF;
+            while(true){
+                minc = min(minc, c[curr]);
+                curr = x[curr];
+                if(curr == i) break;
+            }
+            ans += minc;
+        }else{
+            uf.unite(i, x[i]);
+        }
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
-    }
-    cout << count << endl;
+    cout << ans << endl;
     return 0;
 }

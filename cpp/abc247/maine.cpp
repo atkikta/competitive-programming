@@ -55,33 +55,21 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    long long k;
-    cin >> n >> k;
+    int n, x, y;
+    cin >> n >> x >> y;
     vector<int> a(n);
-    cin >> a ;
+    cin >> a;
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    long long ans = 0;
+    int posx = -1;
+    int posy = -1;
+    int b = -1;
+    for(int i=0; i<n; i++){
+        if(a[i]==x) posx = i;
+        if(a[i]==y) posy = i;
+        if(a[i]<y || x < a[i]) b = i;
+        ans += max(0, min(posx, posy) - b);
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
-    }
-    cout << count << endl;
+    cout << ans << endl;
     return 0;
 }

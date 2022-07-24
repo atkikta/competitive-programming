@@ -51,37 +51,56 @@ template<typename T> std::string join(std::set<T>& set_var, std::string sep = ",
 const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
+struct UnionFind {
+  std::vector<int> d;
+  UnionFind(int n=0): d(n,-1) {}
+  int find(int x) {
+    if (d[x] < 0) return x;
+    return d[x] = find(d[x]);
+  }
+  bool unite(int x, int y) {
+    x = find(x); y = find(y);
+    if (x == y) return false;
+    if (d[x] > d[y]) std::swap(x,y);
+    d[x] += d[y];
+    d[y] = x;
+    return true;
+  }
+  bool same(int x, int y) { return find(x) == find(y);}
+  int size(int x) { return -d[find(x)];}
+};
 
 int main(){
     using namespace std;
     
-    int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
+    int n,m;
+    cin >> n >> m;
+    vector<tuple<int, int, int>> item(0);
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+
+    for(int i=0; i<m; i++){
+        int c, l, r;
+        cin >> c >> l >> r;
+        item.push_back(make_tuple(c, l, r));
+        // l[i]--;r[i]--;
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    std::sort(item.begin(), item.end());
+
+    UnionFind uf(n+1);
+    uf.unite(get<1>(item[0])-1, get<2>(item[0]));
+    long long ans = get<0>(item[0]);
+    for(int i=0; i<m; i++){
+        if(uf.size(get<1>(item[0])-1)==n+1)break;
+        int l = get<1>(item[i])-1;
+        int r = get<2>(item[i]);
+        // cout << l << " " << r << endl;
+        if(!uf.same(l, r)){
+            // cout << get<0>(item[i]) << endl;
+            uf.unite(l, r);
+            ans += get<0>(item[i]);
+        }
     }
-    cout << count << endl;
+    if(uf.size(get<1>(item[0])-1)==n+1) cout << ans << endl;
+    else cout << -1 << endl;
     return 0;
 }

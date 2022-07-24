@@ -52,36 +52,60 @@ const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
 
+using namespace std;
+vector<char> c;
+vector<vector<long long>> dp;
+vector<vector<int>> graph;
+void dfs(int node, int prev){
+    long long val1 = 1, val2 = 1;
+    for(int next:graph[node]){
+        if(next != prev){
+            dfs(next, node);
+            if(c[node]=='a'){
+                val1 *= (dp[next][0] + dp[next][2]);
+                val2 *= (dp[next][0] + dp[next][1] + 2LL*dp[next][2]);
+            }
+            if(c[node]=='b'){
+                val1 *= (dp[next][1] + dp[next][2]);
+                val2 *= (dp[next][0] + dp[next][1] + 2LL*dp[next][2]);
+            }
+            val1 %= MOD;
+            val2 %= MOD;
+        }
+    }
+    if(c[node]=='a'){
+        dp[node][0] = val1;
+        dp[node][2] = (val2-val1+MOD)%MOD;
+    }
+    if(c[node]=='b'){
+        dp[node][1] = val1;
+        dp[node][2] = (val2-val1+MOD)%MOD;
+    }
+}
+
 int main(){
-    using namespace std;
     
     int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
+    cin >> n;
+    dp = vector<vector<long long>>();
+    for(int i=0; i<n; i++){
+        dp.push_back(vector<long long>(3));
+    }
+    c = vector<char>(n);
+    cin >> c;
+    graph = vector<vector<int>>();
+    for(int i=0; i<n; i++){
+        graph.push_back(vector<int>(0));
+    }
+    for(int i=0; i<n-1; i++){
+        int a, b;
+        cin >> a >> b;
+        a--;b--;
+        graph[a].push_back(b);
+        graph[b].push_back(a);
+    }
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
-    }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
-    }
-    cout << count << endl;
+    dfs(0, -1);
+    cout << dp[0][2] << endl;
     return 0;
 }

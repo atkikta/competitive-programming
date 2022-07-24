@@ -55,33 +55,33 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
+    int n, a, b;
+    cin >> n >> a >> b;
+    vector<int> A(n);
+    cin >> A;
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    int left = 0;
+    int right = 1000000001;
+    while (right-left>1){
+        int mid = (left+right)/2;
+        long long min_add_count=0;
+        long long max_sub_count=0;
+        for(int i=0; i<n; i++){
+            if(A[i]<mid){
+                min_add_count += (mid - A[i] + a -1)/a ;
+            }
+            if(A[i]>mid){
+                max_sub_count += (A[i] - mid)/b;
+            }
+        }
+        if(min_add_count > max_sub_count){
+            right = mid;
+        }else{
+            left = mid;
+        }
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
-    }
-    cout << count << endl;
+    cout << left << endl;
+    
+    
     return 0;
 }

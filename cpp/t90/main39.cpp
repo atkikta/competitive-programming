@@ -51,37 +51,40 @@ template<typename T> std::string join(std::set<T>& set_var, std::string sep = ",
 const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
+using namespace std;
+
+vector<vector<int>> graph;
+vector<long long> dp;
+void dfs(int node, int prev){
+    dp[node] = 1;
+    for(int next:graph[node]){
+        if(next != prev){
+            dfs(next, node);
+            dp[node] += dp[next];
+        }
+    }
+}
 
 int main(){
-    using namespace std;
     
     int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    cin >> n;
+    graph = vector<vector<int>>(n);
+    dp = vector<long long>(n);
+    for(int i=0; i<n-1; i++){
+        int a, b;
+        cin >> a >> b;
+        a--;b--;
+        graph[a].push_back(b);
+        graph[b].push_back(a);
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    
+    long long ans = 0;
+    dfs(0, -1);
+    // cout << join(dp) << endl;
+    for(int i=0; i<n; i++){
+        ans += dp[i] * (n-dp[i]);
     }
-    cout << count << endl;
+    cout << ans << endl;
     return 0;
 }

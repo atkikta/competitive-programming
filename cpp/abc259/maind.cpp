@@ -51,37 +51,65 @@ template<typename T> std::string join(std::set<T>& set_var, std::string sep = ",
 const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
-
+struct UnionFind {
+  std::vector<int> d;
+  UnionFind(int n=0): d(n,-1) {}
+  int find(int x) {
+    if (d[x] < 0) return x;
+    return d[x] = find(d[x]);
+  }
+  bool unite(int x, int y) {
+    x = find(x); y = find(y);
+    if (x == y) return false;
+    if (d[x] > d[y]) std::swap(x,y);
+    d[x] += d[y];
+    d[y] = x;
+    return true;
+  }
+  bool same(int x, int y) { return find(x) == find(y);}
+  int size(int x) { return -d[find(x)];}
+};
 int main(){
     using namespace std;
     
     int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
+    long long sx, sy, tx, ty;
+    cin >> n;
+    cin >> sx >> sy >> tx >> ty;
+    vector<long long> x(n);
+    vector<long long> y(n);
+    vector<long long> r(n);
+    for(int i=0; i<n; i++){
+        cin >> x[i] >> y[i] >> r[i];
+    }
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    int si = -1;
+    int ti = -1;
+    for(int i=0; i<n; i++){
+        if((sx-x[i])*(sx-x[i]) + (sy-y[i])*(sy-y[i]) == r[i] * r[i]){
+            si = i;
+            break;
+        }
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    for(int i=0; i<n; i++){
+        if((tx-x[i])*(tx-x[i]) + (ty-y[i])*(ty-y[i]) == r[i] * r[i]){
+            ti = i;
+            break;
+        }
     }
-    cout << count << endl;
+    UnionFind uf(n);
+    for(int i=0; i<n; i++){
+        for(int j=i+1; j<n; j++){
+            long long d = (x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j]);
+            if(r[i]*r[i] - 2* r[i]*r[j] + r[j]*r[j]<= d && d <= r[i]*r[i] + 2* r[i]*r[j] + r[j]*r[j]){
+                uf.unite(i, j);
+            }
+        }
+    }
+    if(uf.same(si, ti)){
+        cout << "Yes" << endl;
+    }else{
+        cout << "No" << endl;
+    }
     return 0;
 }

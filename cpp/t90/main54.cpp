@@ -55,33 +55,38 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    int n, m;
+    cin >> n >> m;
+    vector<vector<int>> g(n+m, vector<int>(0));
+    for(int i=0; i<m; i++){
+        int k;
+        cin >> k;
+        for(int j=0; j<k; j++){
+            int r;
+            cin >> r;
+            r--;
+            int v1 = r;
+            int v2 = n+i;
+            g[v1].push_back(v2);
+            g[v2].push_back(v1);
+        }
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    priority_queue<pair<float,int>, vector<pair<float,int>>, greater<pair<float,int>>> que;
+    vector<float> distance(n+m, MAXFLOAT/2);
+    distance[0] = 0.0;
+    que.push(make_pair(0.0, 0));
+    while(!que.empty()){
+        int pos = que.top().second; que.pop();
+        for(int next: g[pos]){
+            if(distance[next]>distance[pos]+0.5){
+                distance[next] = distance[pos]+0.5;
+                que.push(make_pair(distance[next], next));
+            }
+        }
     }
-    cout << count << endl;
+    for(int i=0; i<n; i++){
+        if(distance[i] == MAXFLOAT/2) cout << -1 << endl;
+        else cout << distance[i] << endl;
+    }
     return 0;
 }

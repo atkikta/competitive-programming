@@ -56,32 +56,31 @@ int main(){
     using namespace std;
     
     int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
+    cin >> n;
+    string s, t;
+    cin >> s >> t;
+    int counts=0;
+    int countt = 0;
+    for(int i=0; i<n; i++){
+        if(s[i]=='0') counts++;
+        if(t[i]=='0') countt++;
+    }
+    if(counts != countt){
+        cout << -1 << endl;
+        return 0;
+    }
+    vector<int> at_s;
+    vector<int> at_t;
+    int ans = 0;
+    for(int i=0; i<n; i++){
+        if(s[i]=='0')at_s.push_back(i);
+        if(t[i]=='0')at_t.push_back(i);
+    }
+    for(int i=0; i<at_s.size(); i++){
+        if(at_s[i] != at_t[i]) ans++;
+    }
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
-    }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
-    }
-    cout << count << endl;
+    cout << ans << endl;
+    
     return 0;
 }

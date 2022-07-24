@@ -52,36 +52,36 @@ const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
 
+int binpower(int k, long long n){
+    int ans = 1;
+    while(n != 0){
+        if(n%2 == 1){
+            ans = (long long)(ans) * k % MOD;
+        }
+        k = (long long) k * k % MOD;
+        n = n/2;
+    }
+    return ans;
+}
+
 int main(){
     using namespace std;
     
-    int n;
-    long long k;
+    long long n;
+    int k;
     cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    if(k==1){
+        if(n==1) cout << 1 << endl;
+        else cout << 0 << endl;
+        return 0;
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    if(n==1){
+        cout << k%MOD << endl;
+    }else if(n==2){
+        cout << ((long long) k)*((long long) k-1)%MOD << endl;
+    }else {
+        cout << ((long long) k)*((long long) k-1)%MOD * binpower(k-2, n-2)%MOD << endl;
     }
-    cout << count << endl;
+    
     return 0;
 }

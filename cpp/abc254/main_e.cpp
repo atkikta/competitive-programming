@@ -52,36 +52,46 @@ const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
 
+using namespace std;
+vector<vector<int>> graph;
+set<int> visited;
+void dfs(int node, int count){
+    visited.insert(node);
+    if(count==0) return;
+    for(int next : graph[node]){
+        dfs(next, count-1);
+    }
+    return;
+}
 int main(){
-    using namespace std;
     
-    int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    int n, m;
+    cin >> n >> m;
+    graph = vector<vector<int>>(n);
+    visited = {};
+    for(int i=0; i<n; i++){
+        graph.push_back(vector<int>(0));
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    for(int i=0; i<m; i++){
+        int a, b;
+        cin >> a >> b;
+        a--; b--;
+        graph[a].push_back(b);
+        graph[b].push_back(a);
     }
-    cout << count << endl;
+    int q;
+    cin >> q;
+    for(int i=0; i<q; i++){
+        int x, k;
+        cin >> x >> k;
+        x--;
+        visited.clear();
+        dfs(x, k);
+        int ans = 0;
+        for(int node:visited){
+            ans += node+1;
+        }
+        cout << ans << endl;
+    }
     return 0;
 }

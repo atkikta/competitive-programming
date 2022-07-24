@@ -56,32 +56,33 @@ int main(){
     using namespace std;
     
     int n;
-    long long k;
-    cin >> n >> k;
+    cin >> n;
     vector<int> a(n);
-    cin >> a ;
+    cin >> a;
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    map<int , int> count;
+    for(int i=0; i<n; i++){
+        count[a[i]]++;
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+
+    vector<int> c;
+    for(auto p: count){
+        c.push_back(p.second);
     }
-    cout << count << endl;
+    vector<long long>csum(c.size()+1);
+    for(int i=1; i<=c.size(); i++){
+        csum[i] = csum[i-1] + c[i-1];
+    }
+    // cout << c.size() << endl;
+    // cout << join(c) << endl;
+    // cout << join(csum) << endl;
+    long long ans = 0;
+    long long base = c[c.size()-1] * c[c.size()-2];
+    for(int i=c.size()-3; i>=0; i--){
+        ans += c[i] * base;
+        base += c[i] * (csum[c.size()] - csum[i+1]);
+        // cout << i << " " << ans << " " << base << endl;
+    }
+    cout << ans << endl;
     return 0;
 }

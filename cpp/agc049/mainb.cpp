@@ -56,32 +56,30 @@ int main(){
     using namespace std;
     
     int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    cin >> n;
+    string s, t;
+    cin >> s >> t;
+    vector<int> a(n+1, 0);
+    vector<int> b(n+1, 0);
+    for(int i=0; i<n; i++){
+        a[i+1] = a[i] ^ (s[i]-'0');
+        b[i+1] = b[i] ^ (t[i]-'0');
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    long long res = 0;
+    int c = 0;
+    for(int i=0; i<=n; i++){
+        c = max(c, i);
+        if(a[c] == b[i]){
+            continue;
+        }
+        while(c+1<=n && a[c]==a[c+1]) c++;
+        if(c==n) {
+            cout<< -1 << endl;
+            return 0;
+        }
+        c++;
+        res += c-i;
     }
-    cout << count << endl;
+    cout << res << endl;
     return 0;
 }

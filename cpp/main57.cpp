@@ -55,33 +55,57 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    int n, m;
+    cin >> n >> m;
+    vector<vector<int>> D(n, vector<int>(m, 0));
+    for(int i=0; i<n; i++){
+        int t, x;
+        cin >> t;
+        for(int j=0; j<t; j++){
+            cin >> x;
+            D[i][x-1] = 1;
+        }
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    vector<int> S(m);
+    cin >> S;
+    // cout << join(S) << endl;
+    int rowpos = 0;
+    for(int i=0; i<m; i++){
+        bool found = false;
+        for(int j=rowpos; j<n; j++){
+            if(D[j][i] == 1){
+                if(j!=rowpos){
+                    swap(D[rowpos], D[j]);
+                }
+                found = true;
+                break;
+            }
+        }
+        if(found){
+            for(int j=0; j<n; j++){
+                if(j!=rowpos && D[j][i]==1){
+                    for(int k=i; k<m; k++){
+                        D[j][k] ^= D[rowpos][k];
+                    }
+                }
+            }
+            if(S[i]==1){
+                for(int j=i; j<m; j++){
+                    S[j] ^= D[rowpos][j];
+                }
+            }
+            rowpos++;
+        }
     }
-    cout << count << endl;
+    if(S == vector<int>(m,0)){
+        int ans = 1;
+        for(int i=rowpos; i<n; i++){
+            ans = ans * 2 % 998244353;
+        }
+        cout << ans << endl;
+    }else {
+        cout << 0 << endl;
+    }
+    
     return 0;
 }

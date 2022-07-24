@@ -56,32 +56,45 @@ int main(){
     using namespace std;
     
     int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
+    cin >> n;
+    map<int, int> maxe;
+    map<int, int> maxcount;
+    vector<map<int, int>> pe(n);
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    for(int i=0; i<n; i++){
+        pe[i] = {};
+        int m;
+        cin >> m;
+        for(int j=0; j<m; j++){
+            int p, e;
+            cin >> p >> e;
+            pe[i].emplace(p ,e);
+            if(maxe.find(p) == maxe.end()){
+                maxe[p] = e;
+                maxcount[p] = 1;
+            }else{
+                if(maxe[p]==e){
+                    maxcount[p]++;
+                }else if(maxe[p] < e){
+                    maxe[p] = e;
+                    maxcount[p] = 1;
+                }
+            }
+        }
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    int ans = 0;
+    bool nochange = true;
+    for(int i=0; i<n; i++){
+        for(auto pa: pe[i]){
+            int p = pa.first;
+            int e = pa.second;
+            if(maxe[p] == e && maxcount[p]==1){
+                ans++;
+                break;
+            }
+        }
     }
-    cout << count << endl;
+    if(ans < n) ans++;
+    cout << ans << endl;
     return 0;
 }

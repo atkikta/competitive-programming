@@ -55,33 +55,26 @@ const long long LINF = LONG_LONG_MAX/2;
 int main(){
     using namespace std;
     
-    int n;
-    long long k;
+    int n, k;
     cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    vector<vector<int>> modlist(k, vector<int>(0));
+    for(int i=0; i<n; i++){
+        int ai;
+        cin >> ai;
+        modlist[i%k].push_back(ai);
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    for(int i=0; i<k; i++){
+        std::sort(modlist[i].begin(), modlist[i].end());
     }
-    cout << count << endl;
+    vector<int> srt(0);
+    for(int i=0; i<n; i++){
+        srt.push_back(modlist[i%k][i/k]);
+    }
+    bool ans = true;
+    for(int i=1; i<n; i++){
+        if(srt[i]<srt[i-1]) ans = false;
+    }
+    if(ans) cout << "Yes" << endl;
+    else cout << "No" << endl;
     return 0;
 }

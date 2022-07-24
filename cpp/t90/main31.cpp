@@ -8,7 +8,7 @@ template<typename T> std::istream& operator >> (std::istream& is, std::vector<T>
 template<typename T> std::string join(std::vector<T>& vec, std::string sep = ","){
     std::stringstream ss;
     ss << "{";
-    for(long long i=0; i<vec.size(); i++){
+    for(int i=0; i<vec.size(); i++){
         ss << vec[i] << ( i+1 == vec.size() ? "}" : sep );
     }
     return ss.str();
@@ -54,34 +54,43 @@ const long long LINF = LONG_LONG_MAX/2;
 
 int main(){
     using namespace std;
-    
     int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
+    cin >> n;
+    vector<int> w(n);
+    vector<int> b(n);
+    cin >> w;
+    cin >> b;
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    vector<vector<int>> grundy(51, vector<int>(1550, 0));
+    grundy[0][0] = 0;
+    grundy[0][1] = 0;
+    for(int i=0; i<51; i++){
+        for(int j=0; j<1500; j++){
+            vector<int> mex(1550);
+            if(i>=1)mex[grundy[i-1][j+i]] = 1;
+            if(j>=2){
+                for(int k=1; k<=j/2; k++){
+                    mex[grundy[i][j-k]] = 1;
+                }
+            }
+            for(int l=0; l<1550; l++){
+                if(mex[l]==0){
+                    grundy[i][j] = l;
+                    break;
+                }
+            }
+        }
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+
+    int sumxor = 0;
+    for(int i=0; i<n; i++){
+        sumxor ^= grundy[w[i]][b[i]];
     }
-    cout << count << endl;
+    if(sumxor==0){
+        cout << "Second" << endl;
+    }else{
+        cout << "First" << endl;
+    }
+    
     return 0;
 }

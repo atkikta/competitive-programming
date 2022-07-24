@@ -51,37 +51,42 @@ template<typename T> std::string join(std::set<T>& set_var, std::string sep = ",
 const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
-
+using namespace std;
+string base8to9(string n){
+    long long b10 = 0;
+    long long pow = 1;
+    for(int i=n.length()-1; i>=0; i--){
+        int dig = n[i] - '0';
+        b10 += dig * pow;
+        pow *= 8;
+    }
+    string ret;
+    while(b10>0){
+        char c = (b10%9) + '0';
+        ret = c+ret;
+        b10 = b10/9;
+    }
+    return ret;
+}
 int main(){
-    using namespace std;
     
-    int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    string s;
+    cin >> s;
+    int k;
+    cin >> k;
+    if(s=="0"){
+        cout << 0 << endl;
+        return 0;
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    for(int i=0; i<k; i++){
+        s = base8to9(s);
+        for(int j=0; j<s.length(); j++){
+            if(s[j] == '8'){
+                s[j] = '5';
+            }
+        }
     }
-    cout << count << endl;
+    
+    cout << s << endl;
     return 0;
 }

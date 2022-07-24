@@ -51,37 +51,42 @@ template<typename T> std::string join(std::set<T>& set_var, std::string sep = ",
 const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
+using namespace std;
+
 
 int main(){
-    using namespace std;
-    
     int n;
-    long long k;
-    cin >> n >> k;
+    cin >> n;
     vector<int> a(n);
-    cin >> a ;
-
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+    cin >> a;
+    vector<vector<int>> record(200, vector<int>(0));
+    int count = min(n, 8);
+    for(int i=0; i<(1<<count); i++){
+        int val = 0;
+        vector<int> nums;
+        for(int j=0; j<8; j++){
+            if(((i>>j)&1)==1){
+                val = val + a[j];
+                val %= 200;
+                nums.push_back(j);
+            }
+        }
+        if(record[val].size()!=0){
+            cout << "Yes" << endl;
+            cout << record[val].size() << " ";
+            for(int k=0; k<record[val].size(); k++){
+                cout << record[val][k]+1 << " ";
+            }
+            cout << endl;
+            cout << nums.size() << " ";
+            for(int k=0; k<nums.size(); k++){
+                cout << nums[k]+1 << " ";
+            }
+            cout << endl;
+            return 0;
+        }
+        record[val] = nums;
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
-    }
-    cout << count << endl;
+    cout << "No" << endl;
     return 0;
 }

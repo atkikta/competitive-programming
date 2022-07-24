@@ -52,36 +52,60 @@ const int INF = INT32_MAX/2;
 const int MOD = 1e9+7;
 const long long LINF = LONG_LONG_MAX/2;
 
-int main(){
-    using namespace std;
-    
-    int n;
-    long long k;
-    cin >> n >> k;
-    vector<int> a(n);
-    cin >> a ;
 
-    vector<int> visited(n, -1);
-    vector<long long> sum(n, -1);
-    long long count = 0;
-    int next = count % n;
-    int t = 0;
-    while(visited[next]==-1){
-        visited[next] = t;
-        sum[next] = count;
-        count += a[next];
-        next = count % n;
-        t++;
-        // cout << t << " " << next << " " << a[next] << endl;
-        if(t>=k) break;
+using namespace std;
+int n;
+vector<vector<long long>> a;
+
+vector<pair<int, int>> vec;
+vector<bool>used;
+
+int calc(){
+    if(vec.size() == n){
+        int ret = 0;
+        for(auto p: vec){
+            ret ^= a[p.first][p.second];
+        }
+        return ret;
     }
-    int cycle_len = t - visited[next];
-    long long cycle_value = count - sum[next];
-    count += cycle_value * ((k-t)/cycle_len);
-    for(int i=0; i<(k-t)%cycle_len; i++){
-        count += a[next];
-        next = count % n;
+    int left;
+    for(int i=0; i<2*n; i++){
+        if(used[i]==false){
+            left = i;
+            used[i] = true;
+            break;
+        }
     }
-    cout << count << endl;
+    int ret = 0;
+    for(int i=0; i<2*n; i++){
+        if(used[i]==false){
+            int right = i;
+            used[i] = true;
+            vec.push_back(make_pair(left, right));
+            ret = max(ret,calc());
+            vec.pop_back();
+            used[i] = false;
+        }
+    }
+    used[left] = false;
+    return ret;
+}
+
+
+int main(){
+    
+    cin >> n;
+    used = vector<bool>(n*2, false);
+    for(int i=0; i<2*n-1; i++){
+        a.push_back(vector<long long>(2*n));
+    }
+    for(int i=0; i<2*n-1; i++){
+        for(int j=i+1; j<2*n; j++){
+            cin >> a[i][j];
+        }
+    }
+
+    cout << calc() << endl;
+
     return 0;
 }
